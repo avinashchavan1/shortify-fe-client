@@ -9,9 +9,15 @@ import Title from 'antd/es/typography/Title';
 
 const { Header } = Layout;
 
-const CustomHeader = () => {
+export interface CustomHeaderProps {
+  // isAuthenticated: boolean;
+  isPublicPage: boolean;
+}
+
+const CustomHeader = (props: CustomHeaderProps) => {
   const location = useLocation();
 
+  const { isPublicPage } = props
   const isAuthenticated = false; // Replace with your authentication logic
   return (
     <Header className="custom-header">
@@ -26,7 +32,7 @@ const CustomHeader = () => {
             key: AppRouterConstants.HOME,
             label: <Link to={AppRouterConstants.HOME}>Home</Link>,
           },
-          ...(isAuthenticated
+          ...(isAuthenticated && !isPublicPage
             ? [
               {
                 key: AppRouterConstants.LINK_MANAGEMENT,
@@ -52,37 +58,39 @@ const CustomHeader = () => {
           },
         ]}
       ></Menu>
-      {isAuthenticated ? (
-        <div className="header-actions">
-          <Button icon={<BellOutlined />} />
-          <Title
-            level={5}
-            style={{
-              height: '30px',
-              transform: 'translate(-3.26562px, -7.42969px)',
-            }}
-          >
-            Avinash Chavan{' '}
-          </Title>
-          <Avatar icon={<UserOutlined />} />
-          <Button type="primary">Log out</Button>
-        </div>
-      ) : (
-        <div className="auth-buttons">
-          <Button type="text">
+      {!isPublicPage && <>
+        {isAuthenticated ? (
+          <div className="header-actions">
+            <Button icon={<BellOutlined />} />
+            <Title
+              level={5}
+              style={{
+                height: '30px',
+                transform: 'translate(-3.26562px, -7.42969px)',
+              }}
+            >
+              Avinash Chavan{' '}
+            </Title>
+            <Avatar icon={<UserOutlined />} />
+            <Button type="primary">Log out</Button>
+          </div>
+        ) : (
+          <div className="auth-buttons">
+            <Button type="text">
 
-            <Link to={AppRouterConstants.REGISTER}>
-              Sign In
-            </Link>
+              <Link to={AppRouterConstants.REGISTER}>
+                Sign In
+              </Link>
 
-          </Button>
-          <Button type="primary">
-            <Link to={AppRouterConstants.LOGIN}>
-              Sign Up
-            </Link>
-          </Button>
-        </div>
-      )}
+            </Button>
+            <Button type="primary">
+              <Link to={AppRouterConstants.LOGIN}>
+                Sign Up
+              </Link>
+            </Button>
+          </div>
+        )}
+      </>}
     </Header>
   );
 };

@@ -7,7 +7,8 @@ import AboutUs from "../../pages/aboutUs/AboutUs";
 import { AppRouterConstants } from "./AppRouter.contants";
 import { LinkManagement } from "../../pages/link-management/LinkManagement";
 import QrCodeGeneration from "../../pages/qr-code-generation/QrCodeGeneration";
-import SignIn from "../../pages/sign-in/SignIn";
+import { SignUp } from "../../pages/sign-up/SignUp";
+import { SignIn } from "../../pages/sign-in/SignIn";
 
 interface AppRouterProps {
     children: React.ReactNode;
@@ -29,8 +30,12 @@ const AppRouter: React.FC<AppRouterProps> = () => {
                     element={<LinkManagement />}
                 />
 
-                <Route path={AppRouterConstants.REGISTER} element={<SignIn />} />
+
+                <Route path={AppRouterConstants.REGISTER} element={<SignUp />} />
+                <Route path={AppRouterConstants.LOGIN} element={<SignIn />} />
+
                 <Route path="*" element={<PageNotFoundWithIcons />} />
+
             </Routes>
         </BrowserRouter>
     );

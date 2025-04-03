@@ -1,0 +1,31 @@
+:root {
+  --blue: #1890ff;
+}
+
+.form-card {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+}
+
+.ant-input-prefix {
+  margin-right: 8px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.ant-btn-primary {
+  border-radius: 4px;
+}
+
+.ant-checkbox-wrapper {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.ant-typography a {
+  color: #1890ff;
+}
+
+.account-page-background {
+  background-image: radial-gradient(#e0e0e0 1px, transparent 2px);
+  background-size: 20px 20px;
+}

@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Typography, Row, Col, Card } from 'antd';
+import { Form, Input, Button, Checkbox, Typography, Row, Col, Card, Layout } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
-import './SignIn.css';
+import './SignUp.css';
 import { AppRouterConstants } from '../../components/core/AppRouter.contants';
 import PublicPageLayout from '../../layouts/PublicPageLayout';
 
 const { Title, Text, Link } = Typography;
 
-export const SignIn = () => {
+export const SignUp = () => {
 
     const onFinish = (values: any) => {
         console.log('Success:', values);
     };
 
     return (
-        <PublicPageLayout>
+        <PublicPageLayout >
 
             <Row
                 justify="center"
@@ -26,9 +26,9 @@ export const SignIn = () => {
                     <Card className="form-card">
                         <div style={{ textAlign: 'center', marginBottom: 24 }}>
                             <Title level={2} style={{ marginBottom: 8 }}>
-                                Let's start
+                                Create Account
                             </Title>
-                            <Text>login to your account to start shortening links!</Text>
+                            <Text>Create your account to start shortening links!</Text>
                         </div>
 
                         <Form
@@ -56,10 +56,48 @@ export const SignIn = () => {
                             >
                                 <Input.Password
                                     prefix={<LockOutlined className="site-form-item-icon" />}
-                                    placeholder="Enter your password"
+                                    placeholder="Create a password"
                                 />
                             </Form.Item>
 
+                            <Form.Item
+                                name="confirmPassword"
+                                rules={[
+                                    { required: true, message: 'Please confirm your password!' },
+                                    ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                            if (!value || getFieldValue('password') === value) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject(
+                                                new Error('The two passwords do not match!'),
+                                            );
+                                        },
+                                    }),
+                                ]}
+                            >
+                                <Input.Password
+                                    prefix={<LockOutlined className="site-form-item-icon" />}
+                                    placeholder="Re-enter your password"
+                                />
+                            </Form.Item>
+
+                            <Form.Item
+                                name="agreement"
+                                valuePropName="checked"
+                                rules={[
+                                    {
+                                        validator: (_, value) =>
+                                            value
+                                                ? Promise.resolve()
+                                                : Promise.reject(
+                                                    new Error('You must agree to the Terms & Conditions'),
+                                                ),
+                                    },
+                                ]}
+                            >
+                                <Checkbox>I agree with Terms & Conditions</Checkbox>
+                            </Form.Item>
 
                             <Form.Item>
                                 <Button
@@ -68,12 +106,12 @@ export const SignIn = () => {
                                     block
                                     style={{ height: '40px', backgroundColor: '#1890ff' }}
                                 >
-                                    Sign in
+                                    Create Account
                                 </Button>
                             </Form.Item>
 
                             <div style={{ textAlign: 'center' }}>
-                                <Text>New user, lets get started </Text> <Link href={AppRouterConstants.REGISTER}>Sign Up</Link>
+                                <Text>Already registered?</Text> <Link href={AppRouterConstants.LOGIN}>Sign In</Link>
                             </div>
                         </Form>
                     </Card>
