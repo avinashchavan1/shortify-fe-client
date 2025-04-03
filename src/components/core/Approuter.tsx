@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import Home from "../../pages/home/Home";
 import PageNotFoundWithIcons from "../page-not-found/PageNotFoundWithIcons";
 import AboutUs from "../../pages/aboutUs/AboutUs";
 import { AppRouterConstants } from "./AppRouter.contants";
@@ -8,6 +7,7 @@ import { LinkManagement } from "../../pages/link-management/LinkManagement";
 import QrCodeGeneration from "../../pages/qr-code-generation/QrCodeGeneration";
 import { SignUp } from "../../pages/sign-up/SignUp";
 import { SignIn } from "../../pages/sign-in/SignIn";
+import { Home } from "../../pages/home/Home";
 
 interface AppRouterProps {
     children: React.ReactNode;
