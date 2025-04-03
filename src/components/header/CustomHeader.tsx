@@ -4,6 +4,7 @@ import { UserOutlined, BellOutlined, SearchOutlined } from '@ant-design/icons';
 import './CustomHeader.css';
 import { Link, useLocation } from 'react-router-dom';
 import { AppRouterConstants } from '../core/AppRouter.contants';
+import Title from 'antd/es/typography/Title';
 
 
 const { Header } = Layout;
@@ -13,35 +14,56 @@ const CustomHeader = () => {
   const location = useLocation();
 
   return (
-    <Header
-      className="custom-header"
-
-    >
+    <Header className="custom-header">
       <div className="logo">
         <Link to={AppRouterConstants.HOME}>Shortify</Link>
       </div>
-      <Menu mode="horizontal" activeKey={location.pathname}>
-        <Menu.Item key={AppRouterConstants.HOME}>
-          <Link to={AppRouterConstants.HOME}>Home</Link>
-        </Menu.Item>
-        <Menu.Item key={AppRouterConstants.LINK_MANAGEMENT}>
-          <Link to={AppRouterConstants.LINK_MANAGEMENT}>Link Management</Link>
-        </Menu.Item>
-        <Menu.Item key={AppRouterConstants.QR_CODE_GENERATION}>
-          <Link to={AppRouterConstants.QR_CODE_GENERATION}>
-            QR Code Generation
-          </Link>
-        </Menu.Item>
-        <Menu.Item key={AppRouterConstants.ABOUT_US}>
-          <Link to={AppRouterConstants.ABOUT_US}>About Us</Link>
-        </Menu.Item>
+      <Menu
+        mode="horizontal"
+        activeKey={location.pathname}
+        items={[
+          {
+            key: AppRouterConstants.HOME,
+            label: <Link to={AppRouterConstants.HOME}>Home</Link>,
+          },
+          {
+            key: AppRouterConstants.LINK_MANAGEMENT,
+            label: (
+              <Link to={AppRouterConstants.LINK_MANAGEMENT}>
+                Link Management
+              </Link>
+            ),
+          },
+          {
+            key: AppRouterConstants.QR_CODE_GENERATION,
+            label: (
+              <Link to={AppRouterConstants.QR_CODE_GENERATION}>
+                QR Code Generation
+              </Link>
+            ),
+          },
+          {
+            key: AppRouterConstants.ABOUT_US,
+            label: <Link to={AppRouterConstants.ABOUT_US}>About Us</Link>,
+          },
+        ]}
+      >
+
       </Menu>
       <div className="header-actions">
-        <Button icon={<SearchOutlined />} />
         <Button icon={<BellOutlined />} />
+        <Title
+          level={5}
+          style={{
+            height: '30px',
+            transform: 'translate(-3.26562px, -7.42969px)',
+          }}
+        >
+          Avinash Chavan{' '}
+        </Title>
         <Avatar icon={<UserOutlined />} />
       </div>
-    </Header >
+    </Header>
   );
 };
 

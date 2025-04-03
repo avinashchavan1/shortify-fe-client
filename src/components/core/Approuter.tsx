@@ -5,8 +5,8 @@ import PageNotFoundWithIcons from "../page-not-found/PageNotFoundWithIcons";
 import LayoutHoc from "../../layouts/Layout";
 import AboutUs from "../../pages/aboutUs/AboutUs";
 import { AppRouterConstants } from "./AppRouter.contants";
-import { QrCodeGeneration } from "../../pages/qr-code-generation/QrCodeGeneration";
 import { LinkManagement } from "../../pages/link-management/LinkManagement";
+import QrCodeGeneration from "../../pages/qr-code-generation/QrCodeGeneration";
 
 interface AppRouterProps {
     children: React.ReactNode;

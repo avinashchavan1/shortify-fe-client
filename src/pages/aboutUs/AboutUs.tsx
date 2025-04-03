@@ -36,7 +36,7 @@ const AboutUs = () => {
                     <Row gutter={[48, 48]} align="middle">
                         <Col xs={24} md={12}>
                             <div className="mission-image">
-                                <img src="/path-to-mission-image.jpg" alt="Our Mission" />
+                                <img src="/about-us.JPG" alt="Our Mission" />
                             </div>
                         </Col>
                         <Col xs={24} md={12}>
