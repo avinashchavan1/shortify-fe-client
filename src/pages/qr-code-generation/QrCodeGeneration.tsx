@@ -55,6 +55,7 @@ const QrCodeGeneration = () => {
                     maxWidth: '800px',
                     margin: '0 auto',
                     minHeight: '60vh',
+                    marginTop: '50px',
                 }}
             >
                 <Space direction="vertical" size="large" style={{ width: '100%' }}>
@@ -99,7 +100,7 @@ const QrCodeGeneration = () => {
                                     onChange={(e) => handleOnchageShortendLink(e.target.value)}
                                     style={{ marginTop: '8px', borderRadius: '4px' }}
                                     prefix={<span style={{ color: '#6366f1' }}>🔗</span>}
-                                    status={!isFormTouched ? "" : isFormValid ? "" : "error"}
+                                    status={!isFormTouched ? '' : isFormValid ? '' : 'error'}
                                 />
                             </div>
 
