@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Checkbox, Typography, Row, Col, Card, Layout } from 'antd';
+import { Form, Input, Button, Checkbox, Typography, Row, Col, Card } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import './SignUp.css';
 import { AppRouterConstants } from '../../components/core/AppRouter.contants';

@@ -1,18 +1,14 @@
-import React from 'react';
-import { Layout, Row, Col, Typography, Card, Avatar, Button, Divider } from 'antd';
+import { Layout, Row, Col, Typography, Card } from 'antd';
 import {
     RocketOutlined,
-    TeamOutlined,
-    TrophyOutlined,
     HeartOutlined,
-    HistoryOutlined,
     GlobalOutlined
 } from '@ant-design/icons';
 import './AboutUs.css';
 import LayoutHoc from '../../layouts/Layout';
 
 const { Content } = Layout;
-const { Title, Paragraph, Text } = Typography;
+const { Title, Paragraph } = Typography;
 
 const AboutUs = () => {
 

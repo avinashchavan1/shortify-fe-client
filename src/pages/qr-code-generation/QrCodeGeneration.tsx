@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Input, Button, Card, Space, Typography, Divider } from 'antd';
 import { QRCode } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';

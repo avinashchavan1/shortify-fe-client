@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
 import { Layout, Menu, Button, Avatar } from 'antd';
-import { UserOutlined, BellOutlined, SearchOutlined } from '@ant-design/icons';
+import { UserOutlined, BellOutlined } from '@ant-design/icons';
 import './CustomHeader.css';
 import { Link, useLocation } from 'react-router-dom';
 import { AppRouterConstants } from '../core/AppRouter.contants';

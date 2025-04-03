@@ -1,15 +1,11 @@
 import React from 'react';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Layout } from 'antd';
 import "./layout.css"
 import CustomHeader from '../components/header/CustomHeader';
 import CustomFooter from '../components/footer/CustomFooter';
 
-const { Header, Content, Footer } = Layout;
+const { Content } = Layout;
 
-const items = Array.from({ length: 2 }).map((_, index) => ({
-    key: index + 1,
-    label: `nav ${index + 1}`,
-}));
 
 interface LayoutHocProps {
     children: React.ReactNode;

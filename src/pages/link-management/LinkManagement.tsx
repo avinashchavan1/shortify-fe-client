@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Table, Button, Input, Space, Rate, TableColumnType, InputRef, TableProps } from 'antd';
+import { Table, Button, Input, Space, TableColumnType, InputRef, TableProps } from 'antd';
 import { FilterOutlined, SearchOutlined } from '@ant-design/icons';
 import LayoutHoc from '../../layouts/Layout';
 import Title from 'antd/es/typography/Title';
@@ -122,18 +122,7 @@ const compareData = (a: string, b: string) => {
 
 
 
-const getButtonColor = (action: string): string => {
-    switch (action) {
-        case 'Delete':
-            return '#6366f1';
-        case 'Restore':
-            return '#6366f1';
-        case 'View':
-            return '#6366f1';
-        default:
-            return '#6366f1'; // Edit and others
-    }
-};
+
 type OnChange = NonNullable<TableProps<TTableData>['onChange']>;
 
 type Filters = Parameters<OnChange>[1];
@@ -247,6 +236,7 @@ export const LinkManagement: React.FC = () => {
             <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
         ),
         onFilter: (value, record) =>
+            // @ts-ignore
             record[dataIndex]
                 .toString()
                 .toLowerCase()
@@ -408,9 +398,10 @@ export const LinkManagement: React.FC = () => {
 
     return (
         <LayoutHoc>
-
             <div style={{ padding: '40px' }}>
-                <Title level={2} className="section-title">Manage your data</Title>
+                <Title level={2} className="section-title">
+                    Manage your data
+                </Title>
                 <div
                     style={{
                         display: 'flex',
@@ -437,14 +428,14 @@ export const LinkManagement: React.FC = () => {
                     </Button>
                 </div>
                 <Table
+                    // @ts-expect-error
                     columns={columns}
                     dataSource={data}
                     pagination={pagination}
+                    // @ts-expect-error
                     onChange={handleTableChange}
                     bordered={false}
                     rowClassName={() => 'custom-row'}
-
-
                 />
             </div>
         </LayoutHoc>

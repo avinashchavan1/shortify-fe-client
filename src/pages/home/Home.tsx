@@ -1,4 +1,3 @@
-import React from 'react';
 import { Typography, Input, Button, Row, Col } from 'antd';
 import { HomeOutlined, SafetyCertificateOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import './Home.css'

@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { Form, Input, Button, Typography, Row, Col, Card } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import './SignIn.css';

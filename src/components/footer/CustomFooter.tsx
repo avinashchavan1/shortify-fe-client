@@ -1,4 +1,3 @@
-import React from 'react';
 import { Layout, Row, Col, Input, Button, Dropdown, Space } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { TwitterOutlined, FacebookOutlined, LinkedinOutlined, YoutubeOutlined } from '@ant-design/icons';

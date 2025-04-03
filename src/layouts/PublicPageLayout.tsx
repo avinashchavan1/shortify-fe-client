@@ -1,10 +1,10 @@
 import React from 'react';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Layout } from 'antd';
 import "./layout.css"
 import CustomHeader from '../components/header/CustomHeader';
 import CustomFooter from '../components/footer/CustomFooter';
 
-const { Header, Content, Footer } = Layout;
+const { Content } = Layout;
 
 
 
