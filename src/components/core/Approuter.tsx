@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Home from "../../pages/home/Home";
 import PageNotFoundWithIcons from "../page-not-found/PageNotFoundWithIcons";
 import AboutUs from "../../pages/aboutUs/AboutUs";
@@ -17,6 +17,10 @@ const AppRouter: React.FC<AppRouterProps> = () => {
     return (
         <BrowserRouter>
             <Routes>
+                <Route
+                    path=""
+                    element={<Navigate to={AppRouterConstants.HOME} replace />}
+                />
                 <Route path={AppRouterConstants.HOME} element={<Home />} />
 
                 <Route path={AppRouterConstants.ABOUT_US} element={<AboutUs />} />
@@ -29,12 +33,10 @@ const AppRouter: React.FC<AppRouterProps> = () => {
                     element={<LinkManagement />}
                 />
 
-
                 <Route path={AppRouterConstants.REGISTER} element={<SignUp />} />
                 <Route path={AppRouterConstants.LOGIN} element={<SignIn />} />
 
                 <Route path="*" element={<PageNotFoundWithIcons />} />
-
             </Routes>
         </BrowserRouter>
     );
