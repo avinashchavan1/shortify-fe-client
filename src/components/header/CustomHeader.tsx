@@ -4,7 +4,8 @@ import './CustomHeader.css';
 import { Link, useLocation } from 'react-router-dom';
 import { AppRouterConstants } from '../core/AppRouter.contants';
 import Title from 'antd/es/typography/Title';
-
+import { useSelector } from 'react-redux';
+import { RootState } from '../app/store/store';
 
 const { Header } = Layout;
 
@@ -16,8 +17,12 @@ export interface CustomHeaderProps {
 const CustomHeader = (props: CustomHeaderProps) => {
   const location = useLocation();
 
-  const { isPublicPage } = props
-  const isAuthenticated = false; // Replace with your authentication logic
+  const userState = useSelector((state: RootState) => state.userState);
+
+  const { isPublicPage } = props;
+  const user = userState?.user;
+  const isAuthenticated = !!user?.id?.length; // Replace with your authentication logic
+
   return (
     <Header className="custom-header">
       <div className="logo">
@@ -33,23 +38,15 @@ const CustomHeader = (props: CustomHeaderProps) => {
           },
           ...(isAuthenticated && !isPublicPage
             ? [
-              {
-                key: AppRouterConstants.LINK_MANAGEMENT,
-                label: (
-                  <Link to={AppRouterConstants.LINK_MANAGEMENT}>
-                    Link Management
-                  </Link>
-                ),
-              },
-            ]
+                {
+                  key: AppRouterConstants.LINK_MANAGEMENT,
+                  label: <Link to={AppRouterConstants.LINK_MANAGEMENT}>Link Management</Link>,
+                },
+              ]
             : []),
           {
             key: AppRouterConstants.QR_CODE_GENERATION,
-            label: (
-              <Link to={AppRouterConstants.QR_CODE_GENERATION}>
-                QR Code Generation
-              </Link>
-            ),
+            label: <Link to={AppRouterConstants.QR_CODE_GENERATION}>QR Code Generation</Link>,
           },
           {
             key: AppRouterConstants.ABOUT_US,
@@ -57,39 +54,35 @@ const CustomHeader = (props: CustomHeaderProps) => {
           },
         ]}
       ></Menu>
-      {!isPublicPage && <>
-        {isAuthenticated ? (
-          <div className="header-actions">
-            <Button icon={<BellOutlined />} />
-            <Title
-              level={5}
-              style={{
-                height: '30px',
-                transform: 'translate(-3.26562px, -7.42969px)',
-              }}
-            >
-              Avinash Chavan{' '}
-            </Title>
-            <Avatar icon={<UserOutlined />} />
-            <Button type="primary">Log out</Button>
-          </div>
-        ) : (
-          <div className="auth-buttons">
-            <Button type="text">
-
-              <Link to={AppRouterConstants.REGISTER}>
-                Sign In
-              </Link>
-
-            </Button>
-            <Button type="primary">
-              <Link to={AppRouterConstants.LOGIN}>
-                Sign Up
-              </Link>
-            </Button>
-          </div>
-        )}
-      </>}
+      {!isPublicPage && (
+        <>
+          {isAuthenticated ? (
+            <div className="header-actions">
+              <Button icon={<BellOutlined />} />
+              <Title
+                level={5}
+                style={{
+                  height: '30px',
+                  transform: 'translate(-3.26562px, -7.42969px)',
+                }}
+              >
+                {user.name}{' '}
+              </Title>
+              <Avatar icon={<UserOutlined />} />
+              <Button type="primary">Log out</Button>
+            </div>
+          ) : (
+            <div className="auth-buttons">
+              <Button type="text">
+                <Link to={AppRouterConstants.LOGIN}>Sign In</Link>
+              </Button>
+              <Button type="primary">
+                <Link to={AppRouterConstants.REGISTER}>Sign Up</Link>
+              </Button>
+            </div>
+          )}
+        </>
+      )}
     </Header>
   );
 };

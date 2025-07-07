@@ -1,38 +1,94 @@
-import { Typography, Input, Button, Row, Col, Checkbox, CheckboxChangeEvent, } from 'antd';
-import { HomeOutlined, SafetyCertificateOutlined, QuestionCircleOutlined, CopyOutlined } from '@ant-design/icons';
-import './Home.css'
+import { Typography, Input, Button, Row, Col, Checkbox, CheckboxChangeEvent, Empty } from 'antd';
+import {
+  HomeOutlined,
+  SafetyCertificateOutlined,
+  QuestionCircleOutlined,
+  CopyOutlined,
+} from '@ant-design/icons';
+import './Home.css';
 import LayoutHoc from '../../layouts/Layout';
 import { useState } from 'react';
+import HttpClient from '../../components/core/http-client/HttpClient';
+import { HttpUrlLinks } from '../../components/core/http-client/HttpClient.constants';
 // import 'antd/dist/antd.css';
-
 
 export type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
+export type TResponseSaveUrl = {
+  shortUrl: string;
+  originalUrl: string;
+  customCode?: string;
+  createdAt: string;
+};
+
+export type DefaultCreateUrlPayload = {
+  originalUrl: string;
+  uniqueKey?: string;
+};
+
+export const HomeMessages = {
+  Empty: 'URL cannot be empty',
+  InvalidUrl: 'Please enter a valid URL',
+  UrlExceedsMaxLength: 'URL exceeds maximum length of 2048 characters',
+  UrlShortened: 'URL has been shortened successfully',
+};
 
 const { Title, Paragraph } = Typography;
 
-
 export const Home = () => {
   const [isCustom, setIsCustom] = useState(false);
-  const [url, setUrl] = useState("")
+  const [url, setUrl] = useState('');
   const [customCode, setCustomCode] = useState('');
-  const [shortLink, setShortLink] = useState("")
-  const onCheckboxChange = (value: CheckboxChangeEvent) => {
-    setIsCustom((prevState) => !prevState);
-    console.log("onCheckbox", value)
-  }
+  const [shortLink, setShortLink] = useState('');
+  const onCheckboxChange = (_value: CheckboxChangeEvent) => {
+    setIsCustom(prevState => !prevState);
+  };
 
-  const [error, setError] = useState("")
+  const [error, setError] = useState('');
 
+  const handleOnChangeUrl = (data: string) => {
+    setUrl(data);
+    const regex =
+      /^(?:(https?|ftp):\/\/)?(([a-z\d]([a-z\d-]*[a-z\d])?\.)+[a-z]{2,}|localhost)(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i;
 
+    if (data.length === 0) {
+      setError(HomeMessages.Empty);
+    } else if (!regex.test(data)) {
+      setError(HomeMessages.InvalidUrl);
+    } else if (data.length > 2048) {
+      setError(HomeMessages.UrlExceedsMaxLength);
+    } else {
+      setError('');
+    }
+    setShortLink('');
+  };
 
+  const handleSubmit = async () => {
+    if (error.length === 0 && url.length > 0) {
+      const requestBody: DefaultCreateUrlPayload = {
+        originalUrl: url,
+      };
 
+      if (isCustom && customCode.length === 6) {
+        requestBody['uniqueKey'] = customCode;
+      }
 
-  const handleSubmit = () => {
-    console.log("submit", url, isCustom, customCode)
-    setShortLink("hey im ready")
+      const urlData = {
+        url: HttpUrlLinks.saveUrl,
+        data: requestBody,
+        successMessage: HomeMessages.UrlShortened,
+      };
+      const resp = await HttpClient.POST<TResponseSaveUrl>(urlData);
+      setShortLink(resp.shortUrl);
+    }
+
     setError('');
-  }
+  };
+
+  const handleOnChangeCustomCode = (data: string) => {
+    setCustomCode(data);
+    setShortLink('');
+  };
   return (
     <LayoutHoc>
       <div className="url-shortener-container">
@@ -48,7 +104,7 @@ export const Home = () => {
             id="url-input"
             placeholder="https://www.example-long-url.com/..."
             className="url-input"
-            onChange={(e) => setUrl(e.target.value)}
+            onChange={e => handleOnChangeUrl(e.target.value)}
           />
 
           <Checkbox
@@ -64,7 +120,7 @@ export const Home = () => {
               id="custom-url-input"
               placeholder="Enter custom short URL"
               className="code-input"
-              onChange={(e) => setCustomCode(e.target.value)}
+              onChange={e => handleOnChangeCustomCode(e.target.value)}
               max={6}
               min={6}
             />
@@ -74,6 +130,12 @@ export const Home = () => {
             type="primary"
             className="shorten-button"
             onClick={() => handleSubmit()}
+            disabled={
+              error.length > 0 ||
+              url.length === 0 ||
+              (isCustom && customCode.length !== 6) ||
+              shortLink.length > 0
+            }
           >
             Shorten URL
           </Button>
@@ -87,7 +149,7 @@ export const Home = () => {
               }}
               className="copyable-text"
             >
-              bit.ly/ahdib
+              {shortLink}
             </Typography.Text>
           )}
           {error && <Typography.Text type="danger">{error}</Typography.Text>}
@@ -104,9 +166,8 @@ export const Home = () => {
                 <HomeOutlined className="benefit-icon" />
                 <Title level={4}>Pure Click</Title>
                 <Paragraph>
-                  Your destination page will not be a displayed directly in the
-                  address bar. This will help with click tracking, analytics, or
-                  simply to mask the original URL.
+                  Your destination page will not be a displayed directly in the address bar. This
+                  will help with click tracking, analytics, or simply to mask the original URL.
                 </Paragraph>
               </div>
             </Col>
@@ -116,9 +177,8 @@ export const Home = () => {
                 <SafetyCertificateOutlined className="benefit-icon" />
                 <Title level={4}>Enhanced Security</Title>
                 <Paragraph>
-                  URL shortening can also provide an additional layer of
-                  security by masking the original URL, which may help prevent
-                  exposure of sensitive data.
+                  URL shortening can also provide an additional layer of security by masking the
+                  original URL, which may help prevent exposure of sensitive data.
                 </Paragraph>
               </div>
             </Col>
@@ -128,8 +188,8 @@ export const Home = () => {
                 <QuestionCircleOutlined className="benefit-icon" />
                 <Title level={4}>Valuable Insights</Title>
                 <Paragraph>
-                  URL shorteners often provide analytics, allowing you to track
-                  clicks, geographic location, and referrer information.
+                  URL shorteners often provide analytics, allowing you to track clicks, geographic
+                  location, and referrer information.
                 </Paragraph>
               </div>
             </Col>

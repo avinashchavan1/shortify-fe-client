@@ -1,46 +1,39 @@
-import React from "react";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import PageNotFoundWithIcons from "../page-not-found/PageNotFoundWithIcons";
-import AboutUs from "../../pages/aboutUs/AboutUs";
-import { AppRouterConstants } from "./AppRouter.contants";
-import { LinkManagement } from "../../pages/link-management/LinkManagement";
-import QrCodeGeneration from "../../pages/qr-code-generation/QrCodeGeneration";
-import { SignUp } from "../../pages/sign-up/SignUp";
-import { SignIn } from "../../pages/sign-in/SignIn";
-import { Home } from "../../pages/home/Home";
+import React from 'react';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import PageNotFoundWithIcons from '../page-not-found/PageNotFoundWithIcons';
+import AboutUs from '../../pages/aboutUs/AboutUs';
+import { AppRouterConstants } from './AppRouter.contants';
+import { LinkManagement } from '../../pages/link-management/LinkManagement';
+import QrCodeGeneration from '../../pages/qr-code-generation/QrCodeGeneration';
+import { SignUp } from '../../pages/sign-up/SignUp';
+import { SignIn } from '../../pages/sign-in/SignIn';
+import { Home } from '../../pages/home/Home';
+import withAuth from './auth/withAuth';
 
 interface AppRouterProps {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }
 
 const AppRouter: React.FC<AppRouterProps> = () => {
-    return (
-        <BrowserRouter>
-            <Routes>
-                <Route
-                    path=""
-                    element={<Navigate to={AppRouterConstants.HOME} replace />}
-                />
-                <Route path={AppRouterConstants.HOME} element={<Home />} />
+  const ProtectedLinkManagement = withAuth(LinkManagement);
 
-                <Route path={AppRouterConstants.ABOUT_US} element={<AboutUs />} />
-                <Route
-                    path={AppRouterConstants.QR_CODE_GENERATION}
-                    element={<QrCodeGeneration />}
-                />
-                <Route
-                    path={AppRouterConstants.LINK_MANAGEMENT}
-                    element={<LinkManagement />}
-                />
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="" element={<Navigate to={AppRouterConstants.HOME} replace />} />
+        <Route path={AppRouterConstants.HOME} element={<Home />} />
 
-                <Route path={AppRouterConstants.REGISTER} element={<SignUp />} />
-                <Route path={AppRouterConstants.LOGIN} element={<SignIn />} />
+        <Route path={AppRouterConstants.ABOUT_US} element={<AboutUs />} />
+        <Route path={AppRouterConstants.QR_CODE_GENERATION} element={<QrCodeGeneration />} />
+        <Route path={AppRouterConstants.LINK_MANAGEMENT} element={<ProtectedLinkManagement />} />
 
-                <Route path="*" element={<PageNotFoundWithIcons />} />
-            </Routes>
-        </BrowserRouter>
-    );
+        <Route path={AppRouterConstants.REGISTER} element={<SignUp />} />
+        <Route path={AppRouterConstants.LOGIN} element={<SignIn />} />
+
+        <Route path="*" element={<PageNotFoundWithIcons />} />
+      </Routes>
+    </BrowserRouter>
+  );
 };
 
 export default AppRouter;
-
