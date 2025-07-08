@@ -5,7 +5,11 @@ import { Link, useLocation } from 'react-router-dom';
 import { AppRouterConstants } from '../core/AppRouter.contants';
 import Title from 'antd/es/typography/Title';
 import { useSelector } from 'react-redux';
-import { RootState } from '../app/store/store';
+import { AppDispatch, RootState } from '../app/store/store';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { fetchUser } from '../../pages/sign-in/UserState.Slice';
+import { HTTP_ACCESS_TOKEN_COOKIE_NAME } from '../core/http-client/HttpClient.constants';
 
 const { Header } = Layout;
 
@@ -22,6 +26,27 @@ const CustomHeader = (props: CustomHeaderProps) => {
   const { isPublicPage } = props;
   const user = userState?.user;
   const isAuthenticated = !!user?.id?.length; // Replace with your authentication logic
+  const accessToken = localStorage.getItem(HTTP_ACCESS_TOKEN_COOKIE_NAME) || '';
+  const dispatch = useDispatch<AppDispatch>();
+  const pathName = window.location.pathname;
+  const isNotSignInOrSignUpPage =
+    pathName !== AppRouterConstants.LOGIN && pathName !== AppRouterConstants.REGISTER;
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function refreshUser() {
+      dispatch(fetchUser());
+    }
+
+    if (!isAuthenticated && accessToken.length > 0 && isNotSignInOrSignUpPage) {
+      refreshUser();
+    }
+
+    // cancel the request if the component unmounts
+    return () => {
+      controller.abort();
+    };
+  }, [dispatch]);
 
   return (
     <Header className="custom-header">

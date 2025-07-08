@@ -61,7 +61,7 @@ const userStateSlice = createSlice({
       state.user = userInitialState;
       state.isAuth = false;
     },
-    setLoading: (state, action: PayloadAction<boolean>) => {
+    setLoading: state => {
       state.loading = true;
       // state.isAuth = action.payload ? false : state.isAuth; // Keep isAuth unchanged if loading is false
     },

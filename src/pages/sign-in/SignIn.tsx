@@ -3,7 +3,10 @@ import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { AppRouterConstants } from '../../components/core/AppRouter.contants';
 import PublicPageLayout from '../../layouts/PublicPageLayout';
 import HttpClient from '../../components/core/http-client/HttpClient';
-import { HttpUrlLinks } from '../../components/core/http-client/HttpClient.constants';
+import {
+  HTTP_ACCESS_TOKEN_COOKIE_NAME,
+  HttpUrlLinks,
+} from '../../components/core/http-client/HttpClient.constants';
 import { AppDispatch } from '../../components/app/store/store';
 import { useNavigate } from 'react-router-dom';
 import { fetchUser } from './UserState.Slice';
@@ -28,7 +31,12 @@ export const SignIn = () => {
       data: values,
     };
     try {
-      await HttpClient.POST(requestData);
+      const data: {
+        token: string;
+        refreshToken: string;
+      } = await HttpClient.POST(requestData);
+      // set localStorage with token and refreshToken
+      localStorage.setItem(HTTP_ACCESS_TOKEN_COOKIE_NAME, data.token);
       dispatch(fetchUser());
       navigate(redirectUrl, { replace: true });
     } catch (error) {

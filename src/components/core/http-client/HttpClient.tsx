@@ -1,6 +1,5 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import axiosClient from './AxiosClient';
-import React from 'react';
 import toast from 'react-hot-toast';
 
 // const HttpClient = {
@@ -48,7 +47,7 @@ const HttpClient = {
       }
       return response;
     } catch (error) {
-      console.log('POST request failed:', error);
+      console.log('POST request failed:', error || errorMessage);
       throw error;
     }
   },

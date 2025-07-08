@@ -150,6 +150,7 @@ export const LinkManagement: React.FC = () => {
   useEffect(() => {
     async function fetchData() {
       const getAllUrls = await HttpClient.GET<any>(HttpUrlLinks.getAll);
+      console.log('getAllUrls', getAllUrls);
     }
     fetchData();
   }, []);

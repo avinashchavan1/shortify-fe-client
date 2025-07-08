@@ -1,4 +1,4 @@
-import { Typography, Input, Button, Row, Col, Checkbox, CheckboxChangeEvent, Empty } from 'antd';
+import { Typography, Input, Button, Row, Col, Checkbox, CheckboxChangeEvent } from 'antd';
 import {
   HomeOutlined,
   SafetyCertificateOutlined,

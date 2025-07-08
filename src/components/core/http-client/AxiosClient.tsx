@@ -1,6 +1,6 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { HttpUrlLinks } from './HttpClient.constants';
+import { HTTP_ACCESS_TOKEN_COOKIE_NAME, HttpUrlLinks } from './HttpClient.constants';
 import HttpClient, { IPostRequestData } from './HttpClient';
 
 const axiosClient = axios.create({
@@ -9,7 +9,7 @@ const axiosClient = axios.create({
     'Content-Type': 'application/json',
   },
   withCredentials: true, // Include credentials in requests
-  timeout: 10000, // 10 seconds timeout
+  timeout: 100000, // 100 seconds timeout
 });
 
 axiosClient.interceptors.request.use(
@@ -39,10 +39,13 @@ axiosClient.interceptors.response.use(
         const requestData = {
           url: HttpUrlLinks.refreshToken,
         } as IPostRequestData<any>;
-        await HttpClient.POST(requestData);
-
+        const respData: {
+          accessToken: string;
+          refreshToken: string;
+        } = await HttpClient.POST(requestData);
+        localStorage.setItem(HTTP_ACCESS_TOKEN_COOKIE_NAME, respData.accessToken);
         return axiosClient(originalRequest);
-      } catch (refreshError) {
+      } catch (error) {
         toast.error('Session expired. Please log in again.');
 
         // Optionally redirect to login page
@@ -53,6 +56,12 @@ axiosClient.interceptors.response.use(
       }
     }
 
+    if (error.response && error.response.status === 403) {
+      const prevUrl = window.location.pathname + window.location.search;
+      const encodedUrlSafe = btoa(encodeURIComponent(prevUrl));
+      const redirectUrl = !!prevUrl.length ? `/login?state=${encodedUrlSafe}` : '/login';
+      window.location.href = redirectUrl; // Adjust the path as needed
+    }
     return Promise.reject(error);
   }
 );

@@ -8,3 +8,6 @@ export const HttpUrlLinks = {
   refreshToken: '/api/auth/refreshToken',
   getUrlById: (id: string) => `/url/getUrlById/${id}`,
 };
+
+export const HTTP_ACCESS_TOKEN_COOKIE_NAME = 'accessToken';
+export const HTTP_REFRESH_TOKEN_COOKIE_NAME = 'refreshToken';

@@ -8,15 +8,12 @@ import QrCodeGeneration from '../../pages/qr-code-generation/QrCodeGeneration';
 import { SignUp } from '../../pages/sign-up/SignUp';
 import { SignIn } from '../../pages/sign-in/SignIn';
 import { Home } from '../../pages/home/Home';
-import withAuth from './auth/withAuth';
 
 interface AppRouterProps {
   children: React.ReactNode;
 }
 
 const AppRouter: React.FC<AppRouterProps> = () => {
-  const ProtectedLinkManagement = withAuth(LinkManagement);
-
   return (
     <BrowserRouter>
       <Routes>
@@ -25,7 +22,7 @@ const AppRouter: React.FC<AppRouterProps> = () => {
 
         <Route path={AppRouterConstants.ABOUT_US} element={<AboutUs />} />
         <Route path={AppRouterConstants.QR_CODE_GENERATION} element={<QrCodeGeneration />} />
-        <Route path={AppRouterConstants.LINK_MANAGEMENT} element={<ProtectedLinkManagement />} />
+        <Route path={AppRouterConstants.LINK_MANAGEMENT} element={<LinkManagement />} />
 
         <Route path={AppRouterConstants.REGISTER} element={<SignUp />} />
         <Route path={AppRouterConstants.LOGIN} element={<SignIn />} />
