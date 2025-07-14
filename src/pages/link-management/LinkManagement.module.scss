@@ -1,0 +1,15 @@
+.truncate {
+  width: 15ch; /* Approximate width for 20 characters */
+  white-space: nowrap; /* Prevents text from wrapping */
+  overflow: hidden; /* Hides overflow text */
+  text-overflow: ellipsis; /* Shows ellipsis (...) */
+ }
+
+ .spinContainer {
+  // color: #1677ff;
+  color: red;
+}
+
+// .actionButtonContainer{
+//   padding: 20px;
+// }

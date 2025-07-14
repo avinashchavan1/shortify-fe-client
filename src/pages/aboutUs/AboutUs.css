@@ -71,6 +71,7 @@
   background: linear-gradient(90deg, #3b90df, #1890ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  align-items: center;
 }
 
 /* Mission Section */

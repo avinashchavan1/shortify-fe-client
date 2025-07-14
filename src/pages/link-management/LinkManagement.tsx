@@ -1,164 +1,118 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Table, Button, Input, Space, TableColumnType, InputRef, TableProps } from 'antd';
+import { Table, Button, Input, Space, TableColumnType, InputRef, TableProps, Spin } from 'antd';
 import { FilterOutlined, SearchOutlined } from '@ant-design/icons';
 import LayoutHoc from '../../layouts/Layout';
 import Title from 'antd/es/typography/Title';
-import { FilterDropdownProps } from 'antd/es/table/interface';
+import { FilterDropdownProps, FilterValue } from 'antd/es/table/interface';
 import Highlighter from 'react-highlight-words';
 import HttpClient from '../../components/core/http-client/HttpClient';
 import { HttpUrlLinks } from '../../components/core/http-client/HttpClient.constants';
 
-enum LinkStatus {
-  ACTIVE = 'active',
-  EXPIRED = 'expired',
-  SUSPENDED = 'suspended',
-}
+import { BarLoader } from 'react-spinners';
+import {
+  ISort,
+  TLinkResponse,
+  TPagination,
+  TTableData,
+  TTableResponseData,
+} from './LinkManagement.types';
+import { createFilterString, linkManagementTableColumns } from './LinkManagement.helper';
+import { formatDate } from '../../utils/helpers';
+import { LinkManagementColumns } from './LinkManagement.constants';
 
-interface TTableData {
-  key: string;
-  shortenedLink: string;
-  originalURL: string;
-  creationDate: string;
-  expirationDate: string;
-  notes: string;
-  action: string;
-  status: LinkStatus;
-}
-
-interface TPagination {
-  current: number;
-  pageSize: number;
-  total: number;
-}
-
-interface ISort {
-  column: {
-    columnKey: string;
-    field: string;
-    order: string;
-  };
-}
-
-const data: TTableData[] = [
-  {
-    key: '1',
-    shortenedLink: 'bit.ly/example',
-    originalURL: 'https://www.example.com',
-    creationDate: '2023-01-15',
-    expirationDate: '2024-01-15',
-    notes: '/',
-    action: 'Edit',
-    status: LinkStatus.ACTIVE,
-  },
-  {
-    key: '2',
-    shortenedLink: 'tinyurl.com/test',
-    originalURL: 'https://www.testpage.com',
-    creationDate: '2023-02-10',
-    expirationDate: '2024-02-10',
-    notes: '/',
-    action: 'Delete',
-    status: LinkStatus.EXPIRED,
-  },
-  {
-    key: '3',
-    shortenedLink: 'shrtcode.com/abc123',
-    originalURL: 'https://www.abc123.com',
-    creationDate: '2023-03-05',
-    expirationDate: '2024-03-05',
-    notes: 'h',
-    action: 'Restore',
-    status: LinkStatus.SUSPENDED,
-  },
-
-  {
-    key: '4',
-    shortenedLink: 'linktree.com/xyz',
-    originalURL: 'https://www.xyzlink.com',
-    creationDate: '2023-01-20',
-    expirationDate: '2024-01-20',
-    notes: 'r',
-    action: 'Edit',
-    status: LinkStatus.EXPIRED,
-  },
-  {
-    key: '5',
-    shortenedLink: 'is.gd/example2',
-    originalURL: 'https://www.example2.com',
-    creationDate: '2023-03-15',
-    expirationDate: '2024-03-15',
-    notes: '/',
-    action: 'View',
-    status: LinkStatus.ACTIVE,
-  },
-  {
-    key: '6',
-    shortenedLink: 'ow.ly/some-long-link',
-    originalURL: 'https://www.some-long-link.com',
-    creationDate: '2023-04-01',
-    expirationDate: '2024-04-01',
-    notes: 'r',
-    action: 'Delete',
-    status: LinkStatus.ACTIVE,
-  },
-  {
-    key: '7',
-    shortenedLink: 'lnk.to/short',
-    originalURL: 'https://www.linkto.com',
-    creationDate: '2023-04-10',
-    expirationDate: '2024-04-10',
-    notes: '/',
-    action: 'Edit',
-    status: LinkStatus.ACTIVE,
-  },
-];
-
-const compareData = (a: string, b: string) => {
-  const aDate = new Date(a);
-  const bDate = new Date(b);
-
-  return aDate.getDate() < bDate.getDate();
-};
+import styles from './LinkManagement.module.scss';
+import { useNavigate } from 'react-router-dom';
+import { AppRouterConstants } from '../../components/core/AppRouter.contants';
 
 type OnChange = NonNullable<TableProps<TTableData>['onChange']>;
 
 type Filters = Parameters<OnChange>[1];
 
+export enum SortOrder {
+  ASC = 'ascend',
+  DESC = 'descend',
+}
+
 export const LinkManagement: React.FC = () => {
-  const [sorter, setSorter] = useState<ISort>({
-    column: {
-      columnKey: 'shortenedLink',
-      field: 'shortenedLink',
-      order: 'ascend',
-    },
+  const [localSorter, setLocalSorter] = useState<ISort>({
+    columnKey: LinkManagementColumns.CREATION_DATE,
+    field: LinkManagementColumns.CREATION_DATE,
+    order: SortOrder.DESC,
   });
   const [pagination, setPagination] = useState<TPagination>({
     current: 1,
-    pageSize: 7,
-    total: 100,
+    pageSize: 10,
+    total: 0,
   });
 
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
   const [filteredInfo, setFilteredInfo] = useState<Filters>({});
+  const [dataSource, setDataSource] = useState<TTableData[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(true);
+  const navigate = useNavigate();
+  console.log('isLoading', isLoading);
+
+  const fetchData = async (newPagination: TPagination, newFilters: Filters, newSorter: ISort) => {
+    console.log('fetchData', newPagination, newFilters, newSorter);
+    const stringfiedFilter = createFilterString(newFilters);
+
+    console.log('stringfiedFilter', stringfiedFilter);
+    setLoading(true);
+    const getAllUrlsByPage = ((await HttpClient.GET<TTableResponseData>(
+      HttpUrlLinks.getAllByPageAndFilter(
+        newPagination.current,
+        newPagination.pageSize,
+        newSorter.columnKey,
+        newSorter.order === SortOrder.DESC ? 'desc' : 'asc',
+        stringfiedFilter
+      )
+    )) ?? []) as unknown as TTableResponseData;
+
+    const allUrls = getAllUrlsByPage.content ?? [];
+    // console.log('getAllUrlsByPage', getAllUrlsByPage);
+
+    const formattedData: TTableData[] = allUrls.map((item: TLinkResponse) => ({
+      key: item.id,
+      shortUrl: item.shortUrl,
+      originalUrl: item.originalUrl,
+      createdAt: formatDate(item.createdAt), // Placeholder for creation date
+      expirationDate: new Date().toLocaleDateString(), // Placeholder for expiration date
+      notes: item.uniqueKey || '',
+      action: 'Edit', // Placeholder for action
+      status: item.status,
+      visitCount: item.visitCount,
+    }));
+    // console.log('formattedData', formattedData);
+
+    setDataSource(formattedData);
+
+    setPagination(prev => ({
+      ...prev,
+      total: getAllUrlsByPage.totalElements,
+    }));
+    setLoading(false);
+  };
+
+  const refreshData = async () => {
+    await fetchData(pagination, filteredInfo, localSorter);
+  };
 
   useEffect(() => {
-    console.log('useffect ', pagination, filteredInfo, sorter);
-  }, [pagination, filteredInfo, sorter]);
-
-  useEffect(() => {
-    async function fetchData() {
-      const getAllUrls = await HttpClient.GET<any>(HttpUrlLinks.getAll);
-      console.log('getAllUrls', getAllUrls);
-    }
-    fetchData();
+    // setLoading(true);
+    // fetchData(pagination, {}, localSorter);
+    refreshData();
+    // setLoading(false);
   }, []);
 
   const handleTableChange = (pagination: TPagination, filters: Filters, sorter: ISort) => {
+    const updatedSorter: ISort = Object.keys(sorter).length ? sorter : localSorter;
+    console.log('handleTableChange', pagination, filters, sorter);
     setPagination(pagination);
     setFilteredInfo(filters);
-    setSorter(sorter);
+    setLocalSorter(updatedSorter);
+    fetchData(pagination, filters, updatedSorter);
   };
 
   const handleSearch = (
@@ -175,7 +129,6 @@ export const LinkManagement: React.FC = () => {
     clearFilters();
     setSearchText('');
   };
-
   const getColumnSearchProps = (dataIndex: string): TableColumnType<TTableData> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <div style={{ padding: 8 }} onKeyDown={e => e.stopPropagation()}>
@@ -243,138 +196,9 @@ export const LinkManagement: React.FC = () => {
         }
       },
     },
-    render: text =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ''}
-        />
-      ) : (
-        text
-      ),
   });
 
-  const generateLinkActions = (status: LinkStatus) => {
-    switch (status) {
-      case LinkStatus.ACTIVE:
-        return 'Deactivate';
-      case LinkStatus.EXPIRED:
-        return 'Delete';
-      case LinkStatus.SUSPENDED:
-        return 'Activate';
-      default:
-        return '';
-    }
-  };
-
-  const generateButtonColorByStatus = (status: LinkStatus) => {
-    switch (status) {
-      case LinkStatus.ACTIVE:
-        return 'rgb(207,216,231)';
-      case LinkStatus.EXPIRED:
-        return 'rgb(245,209,209)';
-      case LinkStatus.SUSPENDED:
-        return 'rgb(226,259,229)';
-      default:
-        return 'black';
-    }
-  };
-
-  const generateColorBasedOnStatus = (status: LinkStatus) => {
-    switch (status) {
-      case LinkStatus.ACTIVE:
-        return 'rgb(226,259,229)';
-      case LinkStatus.EXPIRED:
-        return 'rgb(245,209,209)';
-      case LinkStatus.SUSPENDED:
-        return 'rgb(207,216,231)';
-      default:
-        return 'black';
-    }
-  };
-
-  const columns = [
-    {
-      title: 'Shortened Link',
-      dataIndex: 'shortenedLink',
-      key: 'shortenedLink',
-      sorter: (a: TTableData, b: TTableData) => a.shortenedLink.localeCompare(b.shortenedLink),
-      ...getColumnSearchProps('shortenedLink'),
-    },
-    {
-      title: 'Original URL',
-      dataIndex: 'originalURL',
-      key: 'originalURL',
-      sorter: (a: TTableData, b: TTableData) => a.originalURL.localeCompare(b.originalURL),
-      ...getColumnSearchProps('originalURL'),
-    },
-    {
-      title: 'Creation Date',
-      dataIndex: 'creationDate',
-      key: 'creationDate',
-      sorter: (a: TTableData, b: TTableData) => compareData(a.creationDate, b.creationDate),
-    },
-    {
-      title: 'Expiration Date',
-      dataIndex: 'expirationDate',
-      key: 'expirationDate',
-      sorter: (a: TTableData, b: TTableData) => compareData(a.expirationDate, b.expirationDate),
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (data: string) => (
-        <Button
-          style={{
-            backgroundColor: generateColorBasedOnStatus(data as LinkStatus),
-          }}
-          variant="solid"
-        >
-          {data === LinkStatus.ACTIVE ? 'Active' : 'Expired'}{' '}
-        </Button>
-      ),
-      filters: [
-        { text: 'Active', value: LinkStatus.ACTIVE },
-        {
-          text: 'Expired',
-          value: LinkStatus.EXPIRED,
-        },
-        { text: 'Suspended', value: LinkStatus.SUSPENDED },
-      ],
-      // filteredValue: filteredInfo.name || null,
-      onFilter: (value: string, record: TTableData) => record.status.includes(value as string),
-    },
-    {
-      title: 'Notes',
-      dataIndex: 'notes',
-      key: 'notes',
-      render: (data: TTableData) => (
-        <Input
-          prefix={<span style={{ color: '#ccc' }}></span>}
-          defaultValue={data.notes}
-          style={{ borderRadius: '4px' }}
-        />
-      ),
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_: any, record: TTableData) => (
-        <Button
-          style={{
-            backgroundColor: generateButtonColorByStatus(record.status),
-            borderColor: generateButtonColorByStatus(record.status),
-            width: '80px',
-          }}
-        >
-          {generateLinkActions(record.status)}
-        </Button>
-      ),
-    },
-  ];
+  const columns = linkManagementTableColumns({ getColumnSearchProps, refreshData, setLoading });
 
   return (
     <LayoutHoc>
@@ -401,20 +225,28 @@ export const LinkManagement: React.FC = () => {
               borderColor: '#6366f1',
               borderRadius: '4px',
             }}
+            onClick={() => navigate(AppRouterConstants.HOME)}
           >
             + Add New Link
           </Button>
         </div>
-        <Table
-          // @ts-expect-error
-          columns={columns}
-          dataSource={data}
-          pagination={pagination}
-          // @ts-expect-error
-          onChange={handleTableChange}
-          bordered={false}
-          rowClassName={() => 'custom-row'}
-        />
+
+        <Spin spinning={isLoading} indicator={<BarLoader color="#1677ff" />}>
+          <Table
+            //@ts-expect-error
+            columns={columns}
+            dataSource={dataSource}
+            pagination={{
+              ...pagination,
+              showSizeChanger: true,
+              showTotal: total => ` ${total} items`,
+            }}
+            // @ts-expect-error
+            onChange={handleTableChange}
+            bordered={false}
+            rowClassName={() => 'custom-row'}
+          />
+        </Spin>
       </div>
     </LayoutHoc>
   );

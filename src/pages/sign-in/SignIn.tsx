@@ -13,6 +13,9 @@ import { fetchUser } from './UserState.Slice';
 import { useDispatch } from 'react-redux';
 
 import './SignIn.css';
+import { useState } from 'react';
+
+import styles from './SignIn.module.scss';
 
 const { Title, Text, Link } = Typography;
 
@@ -22,7 +25,7 @@ export const SignIn = () => {
   const params = new URLSearchParams(window.location.search);
   const previousPageRedirect = params.get('state') ?? '';
   const decodedUrl = decodeURIComponent(atob(previousPageRedirect));
-
+  const [loading, setLoading] = useState(false);
   const redirectUrl = !!previousPageRedirect.length ? decodedUrl : AppRouterConstants.HOME;
 
   const onFinish = async (values: any) => {
@@ -30,6 +33,7 @@ export const SignIn = () => {
       url: HttpUrlLinks.login,
       data: values,
     };
+    setLoading(true);
     try {
       const data: {
         token: string;
@@ -42,6 +46,7 @@ export const SignIn = () => {
     } catch (error) {
       return;
     }
+    setLoading(false);
   };
 
   return (
@@ -54,6 +59,9 @@ export const SignIn = () => {
       >
         <Col xs={22} sm={16} md={12} lg={8}>
           <Card className="form-card">
+            <div className={styles.signInLogo}>
+              <img src="/appLogo.svg" alt="ShortURL Logo" />
+            </div>
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
               <Title level={2} style={{ marginBottom: 8 }}>
                 Let's start
@@ -93,7 +101,8 @@ export const SignIn = () => {
                   type="primary"
                   htmlType="submit"
                   block
-                  style={{ height: '40px', backgroundColor: '#1890ff' }}
+                  className={styles.submitBtn}
+                  disabled={loading}
                 >
                   Sign in
                 </Button>

@@ -10,6 +10,8 @@ import LayoutHoc from '../../layouts/Layout';
 import { useState } from 'react';
 import HttpClient from '../../components/core/http-client/HttpClient';
 import { HttpUrlLinks } from '../../components/core/http-client/HttpClient.constants';
+import { getValue } from '../../utils/helpers';
+import { regexUrl } from './Home.helpers';
 // import 'antd/dist/antd.css';
 
 export type NotificationType = 'success' | 'info' | 'warning' | 'error';
@@ -19,6 +21,7 @@ export type TResponseSaveUrl = {
   originalUrl: string;
   customCode?: string;
   createdAt: string;
+  message: string;
 };
 
 export type DefaultCreateUrlPayload = {
@@ -48,12 +51,15 @@ export const Home = () => {
 
   const handleOnChangeUrl = (data: string) => {
     setUrl(data);
-    const regex =
-      /^(?:(https?|ftp):\/\/)?(([a-z\d]([a-z\d-]*[a-z\d])?\.)+[a-z]{2,}|localhost)(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i;
+    // const regex =
+    //   /^(?:(https?|ftp):\/\/)?(([a-z\d]([a-z\d-]*[a-z\d])?\.)+[a-z]{2,}|localhost)(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i;
+
+    // const regex =
+    //   /^(?:(https?|ftp):\/\/)?(([a-z\d]([a-z\d-]*[a-z\d])?\.)+[a-z]{2,}|localhost)(:\d{1,5})?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i;
 
     if (data.length === 0) {
       setError(HomeMessages.Empty);
-    } else if (!regex.test(data)) {
+    } else if (!regexUrl.test(data)) {
       setError(HomeMessages.InvalidUrl);
     } else if (data.length > 2048) {
       setError(HomeMessages.UrlExceedsMaxLength);
@@ -78,14 +84,19 @@ export const Home = () => {
         data: requestBody,
         successMessage: HomeMessages.UrlShortened,
       };
-      const resp = await HttpClient.POST<TResponseSaveUrl>(urlData);
-      setShortLink(resp.shortUrl);
+      try {
+        const resp = await HttpClient.POST<TResponseSaveUrl>(urlData);
+        setShortLink(resp.shortUrl);
+      } catch (e) {
+        const errorMessage = getValue(e, 'response.data.message') || 'Something went wrong';
+        console.log('home', errorMessage);
+        setError(errorMessage);
+      }
     }
-
-    setError('');
   };
 
   const handleOnChangeCustomCode = (data: string) => {
+    setError('');
     setCustomCode(data);
     setShortLink('');
   };

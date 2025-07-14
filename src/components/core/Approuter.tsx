@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
-import PageNotFoundWithIcons from '../page-not-found/PageNotFoundWithIcons';
 import AboutUs from '../../pages/aboutUs/AboutUs';
 import { AppRouterConstants } from './AppRouter.contants';
 import { LinkManagement } from '../../pages/link-management/LinkManagement';
@@ -8,12 +7,32 @@ import QrCodeGeneration from '../../pages/qr-code-generation/QrCodeGeneration';
 import { SignUp } from '../../pages/sign-up/SignUp';
 import { SignIn } from '../../pages/sign-in/SignIn';
 import { Home } from '../../pages/home/Home';
+import { isAuthenticatedUser } from '../header/CustomHeader.helper';
+import PageNotFoundWithIcons from '../page-not-found/PageNotFoundWithIcons';
+import InactiveUrlWarning from './inactive-page/InactiveUrlWarning';
 
 interface AppRouterProps {
   children: React.ReactNode;
 }
 
 const AppRouter: React.FC<AppRouterProps> = () => {
+  const { isAuthenticated } = isAuthenticatedUser();
+
+  // Replace with your authentication logic
+  // if (!isAuthenticated) {
+  //   return (
+  //     <BrowserRouter>
+  //       <Routes>
+  //         <Route path="" element={<Navigate to={AppRouterConstants.LOGIN} replace />} />
+
+  //         <Route path={AppRouterConstants.REGISTER} element={<SignUp />} />
+  //         <Route path={AppRouterConstants.LOGIN} element={<SignIn />} />
+
+  //         <Route path="*" element={<SignIn />} />
+  //       </Routes>
+  //     </BrowserRouter>
+  //   );
+  // }
   return (
     <BrowserRouter>
       <Routes>
@@ -26,6 +45,8 @@ const AppRouter: React.FC<AppRouterProps> = () => {
 
         <Route path={AppRouterConstants.REGISTER} element={<SignUp />} />
         <Route path={AppRouterConstants.LOGIN} element={<SignIn />} />
+
+        <Route path={AppRouterConstants.INACTIVE_URL} element={<InactiveUrlWarning />} />
 
         <Route path="*" element={<PageNotFoundWithIcons />} />
       </Routes>

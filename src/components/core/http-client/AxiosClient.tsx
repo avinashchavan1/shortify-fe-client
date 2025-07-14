@@ -32,6 +32,7 @@ axiosClient.interceptors.response.use(
   },
   async error => {
     // Handle errors globally
+    console.log('Error in AxiosClient:', error);
     const originalRequest = error.config;
     if (error.response && error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -62,6 +63,11 @@ axiosClient.interceptors.response.use(
       const redirectUrl = !!prevUrl.length ? `/login?state=${encodedUrlSafe}` : '/login';
       window.location.href = redirectUrl; // Adjust the path as needed
     }
+
+    if (error.response && error.response.status === 400) {
+      toast.error(error.response.data.message || error || 'Bad Request');
+    }
+
     return Promise.reject(error);
   }
 );
