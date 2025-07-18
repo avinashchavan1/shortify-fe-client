@@ -17,7 +17,7 @@ interface AppRouterProps {
 
 const AppRouter: React.FC<AppRouterProps> = () => {
   const { isAuthenticated } = isAuthenticatedUser();
-
+  console.log('isAuthenticated', isAuthenticated);
   // Replace with your authentication logic
   // if (!isAuthenticated) {
   //   return (

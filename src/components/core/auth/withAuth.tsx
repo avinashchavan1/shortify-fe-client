@@ -1,4 +1,4 @@
-import { ComponentType, useEffect, useState } from 'react';
+import { ComponentType, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../app/store/store';
 import { fetchUser } from '../../../pages/sign-in/UserState.Slice';
@@ -12,7 +12,7 @@ const withAuth =
   <P extends object>(WrappedComponent: ComponentType<P>) =>
   (props: P) => {
     const dispatch = useDispatch<AppDispatch>();
-    const [isLoading, setIsLoading] = useState(false);
+    // const [isLoading, setIsLoading] = useState(false);
     useEffect(() => {
       async function refreshToken() {
         dispatch(fetchUser());

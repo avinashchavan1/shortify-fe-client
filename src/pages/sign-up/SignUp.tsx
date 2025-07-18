@@ -10,7 +10,6 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { TFormData, TResponseSaveUser } from './SignUp.types';
 import { SignUpFormFields } from './SignUp.constants';
-import stylesSignIn from '../sign-in/SignIn.module.scss';
 
 const { Title, Text, Link } = Typography;
 

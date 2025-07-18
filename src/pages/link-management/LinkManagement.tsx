@@ -3,8 +3,7 @@ import { Table, Button, Input, Space, TableColumnType, InputRef, TableProps, Spi
 import { FilterOutlined, SearchOutlined } from '@ant-design/icons';
 import LayoutHoc from '../../layouts/Layout';
 import Title from 'antd/es/typography/Title';
-import { FilterDropdownProps, FilterValue } from 'antd/es/table/interface';
-import Highlighter from 'react-highlight-words';
+import { FilterDropdownProps } from 'antd/es/table/interface';
 import HttpClient from '../../components/core/http-client/HttpClient';
 import { HttpUrlLinks } from '../../components/core/http-client/HttpClient.constants';
 
@@ -20,7 +19,6 @@ import { createFilterString, linkManagementTableColumns } from './LinkManagement
 import { formatDate } from '../../utils/helpers';
 import { LinkManagementColumns } from './LinkManagement.constants';
 
-import styles from './LinkManagement.module.scss';
 import { useNavigate } from 'react-router-dom';
 import { AppRouterConstants } from '../../components/core/AppRouter.contants';
 
@@ -45,8 +43,8 @@ export const LinkManagement: React.FC = () => {
     total: 0,
   });
 
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
+  // const [searchText, setSearchText] = useState('');
+  // const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
   const [filteredInfo, setFilteredInfo] = useState<Filters>({});
   const [dataSource, setDataSource] = useState<TTableData[]>([]);
@@ -116,18 +114,19 @@ export const LinkManagement: React.FC = () => {
   };
 
   const handleSearch = (
-    selectedKeys: string[],
+    _selectedKeys: string[],
     confirm: FilterDropdownProps['confirm'],
-    dataIndex: string
+    _dataIndex: string
   ) => {
     confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
+
+    // setSearchText(selectedKeys[0]);
+    // setSearchedColumn(dataIndex);
   };
 
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
-    setSearchText('');
+    // setSearchText('');
   };
   const getColumnSearchProps = (dataIndex: string): TableColumnType<TTableData> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
@@ -162,8 +161,8 @@ export const LinkManagement: React.FC = () => {
             size="small"
             onClick={() => {
               confirm({ closeDropdown: false });
-              setSearchText((selectedKeys as string[])[0]);
-              setSearchedColumn(dataIndex);
+              // setSearchText((selectedKeys as string[])[0]);
+              // setSearchedColumn(dataIndex);
             }}
           >
             Filter
