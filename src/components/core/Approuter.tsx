@@ -18,21 +18,7 @@ interface AppRouterProps {
 const AppRouter: React.FC<AppRouterProps> = () => {
   const { isAuthenticated } = isAuthenticatedUser();
   console.log('isAuthenticated', isAuthenticated);
-  // Replace with your authentication logic
-  // if (!isAuthenticated) {
-  //   return (
-  //     <BrowserRouter>
-  //       <Routes>
-  //         <Route path="" element={<Navigate to={AppRouterConstants.LOGIN} replace />} />
 
-  //         <Route path={AppRouterConstants.REGISTER} element={<SignUp />} />
-  //         <Route path={AppRouterConstants.LOGIN} element={<SignIn />} />
-
-  //         <Route path="*" element={<SignIn />} />
-  //       </Routes>
-  //     </BrowserRouter>
-  //   );
-  // }
   return (
     <BrowserRouter>
       <Routes>

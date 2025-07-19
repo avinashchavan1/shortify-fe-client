@@ -44,6 +44,7 @@ export const SignIn = () => {
       dispatch(fetchUser());
       navigate(redirectUrl, { replace: true });
     } catch (error) {
+      setLoading(false);
       return;
     }
     setLoading(false);

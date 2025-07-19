@@ -2,6 +2,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { HTTP_ACCESS_TOKEN_COOKIE_NAME, HttpUrlLinks } from './HttpClient.constants';
 import HttpClient, { IPostRequestData } from './HttpClient';
+import { AppRouterConstants } from '../AppRouter.contants';
 
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -32,7 +33,7 @@ axiosClient.interceptors.response.use(
   },
   async error => {
     // Handle errors globally
-    console.log('Error in AxiosClient:', error);
+    console.log('Error in AxiosClient: ', error);
     const originalRequest = error.config;
     if (error.response && error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -52,7 +53,9 @@ axiosClient.interceptors.response.use(
         // Optionally redirect to login page
         const prevUrl = window.location.pathname + window.location.search;
         const encodedUrlSafe = btoa(encodeURIComponent(prevUrl));
-        const redirectUrl = !!prevUrl.length ? `/login?state=${encodedUrlSafe}` : '/login';
+        const redirectUrl = !!prevUrl.length
+          ? `${AppRouterConstants.LOGIN}?state=${encodedUrlSafe}`
+          : AppRouterConstants.LOGIN;
         window.location.href = redirectUrl; // Adjust the path as needed
       }
     }
