@@ -31,7 +31,7 @@ export interface TPagination {
 export interface ISort {
   columnKey: string;
   field: string;
-  order: string;
+  order: 'ascend' | 'descend';
 }
 
 export type TTableResponseData = {

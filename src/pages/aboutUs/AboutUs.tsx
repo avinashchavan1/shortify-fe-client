@@ -34,7 +34,7 @@ const AboutUs = () => {
                   Our Mission
                 </Title>
                 <Paragraph className="mission-text">
-                  At Shortify, we believe in making the internet more accessible and manageable. Our
+                  At Avibit, we believe in making the internet more accessible and manageable. Our
                   mission is to simplify link sharing while providing powerful analytics and tools
                   that help individuals and businesses optimize their online presence.
                 </Paragraph>

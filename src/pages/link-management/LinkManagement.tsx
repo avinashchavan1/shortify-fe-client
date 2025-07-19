@@ -50,13 +50,10 @@ export const LinkManagement: React.FC = () => {
   const [dataSource, setDataSource] = useState<TTableData[]>([]);
   const [isLoading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
-  console.log('isLoading', isLoading);
 
   const fetchData = async (newPagination: TPagination, newFilters: Filters, newSorter: ISort) => {
-    console.log('fetchData', newPagination, newFilters, newSorter);
     const stringfiedFilter = createFilterString(newFilters);
 
-    console.log('stringfiedFilter', stringfiedFilter);
     setLoading(true);
     const getAllUrlsByPage = ((await HttpClient.GET<TTableResponseData>(
       HttpUrlLinks.getAllByPageAndFilter(
@@ -69,7 +66,6 @@ export const LinkManagement: React.FC = () => {
     )) ?? []) as unknown as TTableResponseData;
 
     const allUrls = getAllUrlsByPage.content ?? [];
-    // console.log('getAllUrlsByPage', getAllUrlsByPage);
 
     const formattedData: TTableData[] = allUrls.map((item: TLinkResponse) => ({
       key: item.id,
@@ -82,7 +78,6 @@ export const LinkManagement: React.FC = () => {
       status: item.status,
       visitCount: item.visitCount,
     }));
-    // console.log('formattedData', formattedData);
 
     setDataSource(formattedData);
 
@@ -94,7 +89,11 @@ export const LinkManagement: React.FC = () => {
   };
 
   const refreshData = async () => {
-    await fetchData(pagination, filteredInfo, localSorter);
+    try {
+      await fetchData(pagination, filteredInfo, localSorter);
+    } catch (error) {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -106,7 +105,6 @@ export const LinkManagement: React.FC = () => {
 
   const handleTableChange = (pagination: TPagination, filters: Filters, sorter: ISort) => {
     const updatedSorter: ISort = Object.keys(sorter).length ? sorter : localSorter;
-    console.log('handleTableChange', pagination, filters, sorter);
     setPagination(pagination);
     setFilteredInfo(filters);
     setLocalSorter(updatedSorter);

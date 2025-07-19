@@ -76,7 +76,7 @@ export const Home = () => {
       };
 
       if (isCustom && customCode.length === 6) {
-        requestBody['uniqueKey'] = customCode;
+        requestBody['uniqueKey'] = customCode.toLowerCase();
       }
 
       const urlData = {
@@ -97,7 +97,7 @@ export const Home = () => {
 
   const handleOnChangeCustomCode = (data: string) => {
     setError('');
-    setCustomCode(data);
+    setCustomCode(data.toLowerCase());
     setShortLink('');
   };
   return (

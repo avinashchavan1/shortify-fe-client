@@ -17,8 +17,27 @@ export const HttpUrlLinks = {
     sortField: string,
     sortDir: string,
     filterString = ''
-  ) =>
-    `/url/all/${page}?pageSize=${pageSize}&sortField=${sortField}&sortDir=${sortDir}${filterString}`,
+  ) => {
+    let params = false;
+    let baseUrl = `url/all/${page}?`;
+    if (pageSize) {
+      baseUrl += `pageSize=${pageSize}`;
+      params = true;
+    }
+    if (sortField && sortDir) {
+      baseUrl += `&sortField=${sortField}&sortDir=${sortDir}`;
+      params = true;
+    }
+    if (filterString) {
+      baseUrl += filterString;
+      params = true;
+    }
+    if (!params) {
+      baseUrl = baseUrl.slice(0, -1); // Remove trailing '?'
+    }
+
+    return baseUrl;
+  },
 };
 
 export const HTTP_ACCESS_TOKEN_COOKIE_NAME = 'accessToken';

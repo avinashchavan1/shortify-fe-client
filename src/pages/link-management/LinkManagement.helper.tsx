@@ -45,6 +45,7 @@ export const capitalizeFirstLetter = (str: string) => {
 
 export const linkManagementTableColumns = (props: ILinkManagementTableColumnsProps) => {
   const { getColumnSearchProps, refreshData, setLoading } = props;
+  const currentProtocol = window.location.protocol;
   const handleOnclick = async (record: TTableData, incomingAction: TableActionType) => {
     setLoading(true);
     try {
@@ -69,10 +70,10 @@ export const linkManagementTableColumns = (props: ILinkManagementTableColumnsPro
       title: LinkManagementColumnsNames[LinkManagementColumns.SHORT_URL],
       dataIndex: LinkManagementColumns.SHORT_URL,
       key: LinkManagementColumns.SHORT_URL,
-      sorter: (a: TTableData, b: TTableData) => a.shortUrl.localeCompare(b.shortUrl),
+      sorter: true,
       ...getColumnSearchProps(LinkManagementColumns.SHORT_URL),
       render: (text: string) => (
-        <a href={text} target="_blank" rel="noopener noreferrer">
+        <a href={`${currentProtocol}//${text}`} target="_blank" rel="noopener noreferrer">
           {text}
         </a>
       ),
@@ -102,19 +103,19 @@ export const linkManagementTableColumns = (props: ILinkManagementTableColumnsPro
       ],
       // filteredValue: filteredInfo.name || null,
       onFilter: (value: string, record: TTableData) => record.status.includes(value as string),
-      sorter: (a: TTableData, b: TTableData) => a.status.localeCompare(b.status),
+      sorter: true,
     },
     {
       title: LinkManagementColumnsNames[LinkManagementColumns.CREATION_DATE],
       dataIndex: LinkManagementColumns.CREATION_DATE,
       key: LinkManagementColumns.CREATION_DATE,
-      sorter: (a: TTableData, b: TTableData) => compareDate(a.createdAt, b.createdAt),
+      sorter: true,
     },
     {
       title: LinkManagementColumnsNames[LinkManagementColumns.VISITS],
       dataIndex: LinkManagementColumns.VISITS,
       key: LinkManagementColumns.VISITS,
-      sorter: (a: TTableData, b: TTableData) => a.visitCount < b.visitCount,
+      sorter: true,
     },
     {
       title: LinkManagementColumnsNames[LinkManagementColumns.ACTIONS],
