@@ -1,5 +1,5 @@
-import { Layout, Menu, Button, Avatar } from 'antd';
-import { UserOutlined, BellOutlined } from '@ant-design/icons';
+import { Layout, Menu, Button, Avatar, Drawer } from 'antd';
+import { UserOutlined, MenuOutlined } from '@ant-design/icons';
 import './CustomHeader.css';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AppRouterConstants } from '../core/AppRouter.contants';
@@ -14,6 +14,7 @@ import {
 import { isAuthenticatedUser } from './CustomHeader.helper';
 import HttpClient from '../core/http-client/HttpClient';
 import toast from 'react-hot-toast';
+import { useEffect, useState } from 'react';
 
 const { Header } = Layout;
 
@@ -24,7 +25,8 @@ export interface CustomHeaderProps {
 
 const CustomHeader = (props: CustomHeaderProps) => {
   const location = useLocation();
-
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const { isPublicPage } = props;
   const { isAuthenticated, user } = isAuthenticatedUser(); // Replace with your authentication logic
   // const accessToken = localStorage.getItem(HTTP_ACCESS_TOKEN_COOKIE_NAME) || '';
@@ -40,12 +42,93 @@ const CustomHeader = (props: CustomHeaderProps) => {
     .join('')
     .toUpperCase();
 
-  const hanldeLogout = async () => {
+  const handleLogout = async () => {
     await HttpClient.GET(HttpUrlLinks.logout);
     localStorage.removeItem(HTTP_ACCESS_TOKEN_COOKIE_NAME);
     toast.success('Logged out successfully');
     navigate(AppRouterConstants.LOGIN);
   };
+
+  useEffect(() => {
+    const mobile = window.innerWidth <= 768;
+    setIsMobile(mobile);
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const menuItems =
+    isNotSignInOrSignUpPage && isAuthenticated
+      ? [
+          {
+            key: AppRouterConstants.HOME,
+            label: <Link to={AppRouterConstants.HOME}>Home</Link>,
+          },
+          {
+            key: AppRouterConstants.LINK_MANAGEMENT,
+            label: <Link to={AppRouterConstants.LINK_MANAGEMENT}>Link Management</Link>,
+          },
+          {
+            key: AppRouterConstants.QR_CODE_GENERATION,
+            label: <Link to={AppRouterConstants.QR_CODE_GENERATION}>QR Code Generation</Link>,
+          },
+          {
+            key: AppRouterConstants.ABOUT_US,
+            label: <Link to={AppRouterConstants.ABOUT_US}>About Us</Link>,
+          },
+        ]
+      : [];
+
+  const userData = (
+    <>
+      {isMobile ? (
+        <>
+          {!!userName.length ? <Avatar>{userName}</Avatar> : <Avatar icon={<UserOutlined />} />}
+          <Title
+            level={5}
+            style={{
+              height: '30px',
+              transform: 'translate(-3.26562px, -7.42969px)',
+            }}
+          >
+            {user.name}{' '}
+          </Title>
+        </>
+      ) : (
+        <>
+          <Title
+            level={5}
+            style={{
+              height: '30px',
+              transform: 'translate(-3.26562px, -7.42969px)',
+            }}
+          >
+            {user.name}{' '}
+          </Title>
+          {!!userName.length ? <Avatar>{userName}</Avatar> : <Avatar icon={<UserOutlined />} />}
+        </>
+      )}
+    </>
+  );
+
+  const userSection = isAuthenticated ? (
+    <div className="header-actions">
+      {/* <Button icon={<BellOutlined />} /> */}
+      {userData}
+      <Button
+        type="primary"
+        onClick={() => {
+          handleLogout();
+          dispatch(clearUser());
+        }}
+      >
+        Log out
+      </Button>
+    </div>
+  ) : (
+    <></>
+  );
+
   return (
     <Header className="custom-header">
       <div className="logo">
@@ -53,35 +136,70 @@ const CustomHeader = (props: CustomHeaderProps) => {
           Avibit
         </Link>
       </div>
-      <Menu
-        mode="horizontal"
-        activeKey={location.pathname}
-        items={
-          isNotSignInOrSignUpPage && isAuthenticated
-            ? [
-                {
-                  key: AppRouterConstants.HOME,
-                  label: <Link to={AppRouterConstants.HOME}>Home</Link>,
-                },
-                {
-                  key: AppRouterConstants.LINK_MANAGEMENT,
-                  label: <Link to={AppRouterConstants.LINK_MANAGEMENT}>Link Management</Link>,
-                },
+      {/* <Menu mode="horizontal" activeKey={location.pathname} items={menuItems}></Menu> */}
 
-                {
-                  key: AppRouterConstants.QR_CODE_GENERATION,
-                  label: <Link to={AppRouterConstants.QR_CODE_GENERATION}>QR Code Generation</Link>,
-                },
-                {
-                  key: AppRouterConstants.ABOUT_US,
-                  label: <Link to={AppRouterConstants.ABOUT_US}>About Us</Link>,
-                },
-              ]
-            : []
-        }
-      ></Menu>
+      {/* Show normal menu for desktop, hamburger for mobile */}
 
-      {isAuthenticated && (
+      {isMobile && isAuthenticated ? (
+        <div className="menu-wrapper">
+          <Menu
+            mode="horizontal"
+            activeKey={location.pathname}
+            items={menuItems}
+            className="desktop-menu"
+          />
+          <div className="header-actions">
+            {!!userName.length ? <Avatar>{userName}</Avatar> : <Avatar icon={<UserOutlined />} />}{' '}
+            <Title
+              level={5}
+              style={{
+                height: '30px',
+                transform: 'translate(-3.26562px, -7.42969px)',
+              }}
+            >
+              {user.name.split(' ')[0]}{' '}
+            </Title>{' '}
+          </div>
+          <Button
+            className="mobile-menu-button"
+            icon={<MenuOutlined style={{ color: '#1677ff' }} />}
+            onClick={() => setDrawerVisible(true)}
+            type="text"
+          />
+          <Drawer
+            title={<div className="header-actions">{userData}</div>}
+            placement="right"
+            closable={true}
+            onClose={() => setDrawerVisible(false)}
+            open={drawerVisible}
+            className="mobile-drawer"
+            bodyStyle={{ padding: 0 }}
+          >
+            <Menu
+              mode="inline"
+              selectedKeys={[location.pathname]}
+              items={menuItems}
+              onClick={() => setDrawerVisible(false)}
+            />
+            <Button
+              style={{ marginLeft: '24px', marginTop: '8px' }}
+              type="primary"
+              onClick={() => {
+                handleLogout();
+                dispatch(clearUser());
+              }}
+            >
+              Log out
+            </Button>
+          </Drawer>
+        </div>
+      ) : (
+        <>
+          <Menu mode="horizontal" activeKey={location.pathname} items={menuItems}></Menu>
+          {userSection}
+        </>
+      )}
+      {/* {isAuthenticated && (
         <div className="header-actions">
           <Button icon={<BellOutlined />} />
           <Title
@@ -104,7 +222,7 @@ const CustomHeader = (props: CustomHeaderProps) => {
             Log out
           </Button>
         </div>
-      )}
+      )} */}
       {isPublicPage && (
         <div className="auth-buttons">
           <Button type="text" onClick={() => navigate(AppRouterConstants.LOGIN)}>

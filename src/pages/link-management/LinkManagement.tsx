@@ -230,6 +230,7 @@ export const LinkManagement: React.FC = () => {
 
         <Spin spinning={isLoading} indicator={<BarLoader color="#1677ff" />}>
           <Table
+            scroll={{ x: 'max-content' }}
             //@ts-expect-error
             columns={columns}
             dataSource={dataSource}

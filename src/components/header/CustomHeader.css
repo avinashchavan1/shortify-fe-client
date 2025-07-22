@@ -22,6 +22,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  /* flex-direction: row; */
 }
 
 .ant-btn {
@@ -31,4 +32,39 @@
 
 .ant-avatar {
   background-color: #1890ff;
+}
+
+.menu-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+/* Hide hamburger on desktop, show menu; reverse on mobile */
+.desktop-menu {
+  display: flex;
+}
+.mobile-menu-button {
+  display: none;
+}
+
+/* Drawer is by default hidden; it overlays when open */
+
+/* On small screens: show hamburger, hide menu */
+@media (max-width: 768px) {
+  .desktop-menu {
+    display: none !important;
+  }
+  .mobile-menu-button {
+    display: inline-flex !important;
+    margin-left: 8px;
+    font-size: 24px;
+  }
+  .menu-wrapper {
+    width: auto;
+  }
+}
+
+.ant-drawer-header-title {
+  display: flex;
+  flex-direction: row-reverse;
 }
