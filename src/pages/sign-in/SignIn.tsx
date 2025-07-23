@@ -1,4 +1,4 @@
-import { Form, Input, Button, Typography, Row, Col, Card } from 'antd';
+import { Form, Input, Button, Typography, Row, Col, Card, Divider } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { AppRouterConstants } from '../../components/core/AppRouter.contants';
 import PublicPageLayout from '../../layouts/PublicPageLayout';
@@ -14,6 +14,7 @@ import { useDispatch } from 'react-redux';
 
 import './SignIn.css';
 import { useState } from 'react';
+import googleLogo from '../../../public/google.svg';
 
 import styles from './SignIn.module.scss';
 
@@ -86,7 +87,6 @@ export const SignIn = () => {
                   placeholder="Your Username"
                 />
               </Form.Item>
-
               <Form.Item
                 name="password"
                 rules={[{ required: true, message: 'Please create a password!' }]}
@@ -96,7 +96,6 @@ export const SignIn = () => {
                   placeholder="Enter your password"
                 />
               </Form.Item>
-
               <Form.Item>
                 <Button
                   type="primary"
@@ -106,6 +105,31 @@ export const SignIn = () => {
                   disabled={loading}
                 >
                   Sign in
+                </Button>
+                <Divider style={{ margin: '16px 0' }}>Or </Divider>
+                <Button
+                  type="primary"
+                  htmlType="button"
+                  block
+                  style={{
+                    backgroundColor: 'white',
+                    color: '#000',
+                    borderColor: '#d9d9d9',
+                  }}
+                  disabled={loading}
+                >
+                  {
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <img
+                        src={googleLogo}
+                        alt="Google Logo"
+                        style={{
+                          height: 16,
+                        }}
+                      />
+                      <a href={import.meta.env.VITE_OAUTH2_GOOGLE_URL}>Continue with Google</a>
+                    </div>
+                  }
                 </Button>
               </Form.Item>
 

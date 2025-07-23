@@ -1,4 +1,4 @@
-import { Form, Input, Button, Checkbox, Typography, Row, Col, Card } from 'antd';
+import { Form, Input, Button, Checkbox, Typography, Row, Col, Card, Divider } from 'antd';
 import { MailOutlined, LockOutlined, IdcardOutlined, UserOutlined } from '@ant-design/icons';
 import './SignUp.css';
 import { AppRouterConstants } from '../../components/core/AppRouter.contants';
@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { TFormData, TResponseSaveUser } from './SignUp.types';
 import { SignUpFormFields } from './SignUp.constants';
+import googleLogo from '../../../public/google.svg';
 
 const { Title, Text, Link } = Typography;
 
@@ -50,6 +51,10 @@ export const SignUp = () => {
       return;
     }
   };
+
+  // const handleLoginWithGoogle = () => {
+  //   window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+  // };
 
   return (
     <PublicPageLayout>
@@ -161,6 +166,31 @@ export const SignUp = () => {
                   style={{ height: '40px', backgroundColor: '#1890ff' }}
                 >
                   Create Account
+                </Button>
+                <Divider style={{ margin: '16px 0' }}>Or </Divider>
+                <Button
+                  type="primary"
+                  htmlType="button"
+                  block
+                  style={{
+                    backgroundColor: 'white',
+                    color: '#000',
+                    borderColor: '#d9d9d9',
+                  }}
+                >
+                  {
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <img
+                        src={googleLogo}
+                        alt="Google Logo"
+                        style={{
+                          height: 16,
+                        }}
+                      />
+
+                      <a href={import.meta.env.VITE_OAUTH2_GOOGLE_URL}>Continue with Google</a>
+                    </div>
+                  }
                 </Button>
               </Form.Item>
 

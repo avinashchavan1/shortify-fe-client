@@ -7,6 +7,7 @@ export const HttpUrlLinks = {
   getAllUrls: '/url/getAllUrls',
   getAll: '/url/all',
   refreshToken: '/api/auth/refreshToken',
+  loginWithGoogle: '/oauth2/authorization/google',
   urlDetails: (id: string) => `url/${id}`,
   suspendUrl: (id: string) => `url/${id}/suspend`,
   activateUrl: (id: string) => `url/${id}/activate`,
