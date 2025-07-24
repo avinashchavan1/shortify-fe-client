@@ -43,6 +43,7 @@ export const Home = () => {
   const [url, setUrl] = useState('');
   const [customCode, setCustomCode] = useState('');
   const [shortLink, setShortLink] = useState('');
+  const [loading, setLoading] = useState(false);
   const onCheckboxChange = (_value: CheckboxChangeEvent) => {
     setIsCustom(prevState => !prevState);
   };
@@ -70,6 +71,7 @@ export const Home = () => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     if (error.length === 0 && url.length > 0) {
       const requestBody: DefaultCreateUrlPayload = {
         originalUrl: url,
@@ -87,10 +89,12 @@ export const Home = () => {
       try {
         const resp = await HttpClient.POST<TResponseSaveUrl>(urlData);
         setShortLink(resp.shortUrl);
+        setLoading(false);
       } catch (e) {
         const errorMessage = getValue(e, 'response.data.message') || 'Something went wrong';
         console.log('home', errorMessage);
         setError(errorMessage);
+        setLoading(false);
       }
     }
   };
@@ -145,7 +149,8 @@ export const Home = () => {
               error.length > 0 ||
               url.length === 0 ||
               (isCustom && customCode.length !== 6) ||
-              shortLink.length > 0
+              shortLink.length > 0 ||
+              loading
             }
           >
             Shorten URL

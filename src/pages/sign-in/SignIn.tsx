@@ -14,7 +14,8 @@ import { useDispatch } from 'react-redux';
 
 import './SignIn.css';
 import { useState } from 'react';
-import googleLogo from '../../../public/google.svg';
+import { isAuthenticatedUser } from '../../components/header/CustomHeader.helper';
+import { ContinueWithGoogle } from './ContinueWithGoogle';
 
 import styles from './SignIn.module.scss';
 
@@ -28,6 +29,11 @@ export const SignIn = () => {
   const decodedUrl = decodeURIComponent(atob(previousPageRedirect));
   const [loading, setLoading] = useState(false);
   const redirectUrl = !!previousPageRedirect.length ? decodedUrl : AppRouterConstants.HOME;
+
+  const { isAuthenticated } = isAuthenticatedUser(); // Replace with your authentication logic
+  if (isAuthenticated) {
+    navigate(AppRouterConstants.HOME);
+  }
 
   const onFinish = async (values: any) => {
     const requestData = {
@@ -107,30 +113,7 @@ export const SignIn = () => {
                   Sign in
                 </Button>
                 <Divider style={{ margin: '16px 0' }}>Or </Divider>
-                <Button
-                  type="primary"
-                  htmlType="button"
-                  block
-                  style={{
-                    backgroundColor: 'white',
-                    color: '#000',
-                    borderColor: '#d9d9d9',
-                  }}
-                  disabled={loading}
-                >
-                  {
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <img
-                        src={googleLogo}
-                        alt="Google Logo"
-                        style={{
-                          height: 16,
-                        }}
-                      />
-                      <a href={import.meta.env.VITE_OAUTH2_GOOGLE_URL}>Continue with Google</a>
-                    </div>
-                  }
-                </Button>
+                <ContinueWithGoogle isLoading={loading} />
               </Form.Item>
 
               <div style={{ textAlign: 'center' }}>

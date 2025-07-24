@@ -9,6 +9,8 @@ import { isAuthenticatedUser } from '../components/header/CustomHeader.helper';
 import { fetchUser } from '../pages/sign-in/UserState.Slice';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../components/app/store/store';
+import HttpClient from '../components/core/http-client/HttpClient';
+import { HttpUrlLinks } from '../components/core/http-client/HttpClient.constants';
 
 const { Content } = Layout;
 
@@ -49,6 +51,18 @@ const LayoutHoc: React.FC<LayoutHocProps> = ({ children }) => {
       controller.abort();
     };
   }, [dispatch]);
+
+  // pooling for authentication status
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if (isAuthenticated) {
+        await HttpClient.GET(HttpUrlLinks.hello);
+      }
+    }, 60000); // Check every 60 seconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [isAuthenticated, dispatch]);
 
   return (
     <Layout>

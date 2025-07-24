@@ -1,6 +1,7 @@
 export const HttpUrlLinks = {
   saveUrl: '/url/saveUrl',
   me: '/user/me',
+  hello: '/user/hello',
   login: '/api/auth/login',
   logout: 'api/auth/logout',
   register: '/user/saveUser',

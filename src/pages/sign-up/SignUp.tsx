@@ -10,7 +10,8 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { TFormData, TResponseSaveUser } from './SignUp.types';
 import { SignUpFormFields } from './SignUp.constants';
-import googleLogo from '../../../public/google.svg';
+import { ContinueWithGoogle } from '../sign-in/ContinueWithGoogle';
+import { isAuthenticatedUser } from '../../components/header/CustomHeader.helper';
 
 const { Title, Text, Link } = Typography;
 
@@ -52,9 +53,10 @@ export const SignUp = () => {
     }
   };
 
-  // const handleLoginWithGoogle = () => {
-  //   window.location.href = 'http://localhost:8080/oauth2/authorization/google';
-  // };
+  const { isAuthenticated } = isAuthenticatedUser(); // Replace with your authentication logic
+  if (isAuthenticated) {
+    navigate(AppRouterConstants.HOME);
+  }
 
   return (
     <PublicPageLayout>
@@ -168,30 +170,7 @@ export const SignUp = () => {
                   Create Account
                 </Button>
                 <Divider style={{ margin: '16px 0' }}>Or </Divider>
-                <Button
-                  type="primary"
-                  htmlType="button"
-                  block
-                  style={{
-                    backgroundColor: 'white',
-                    color: '#000',
-                    borderColor: '#d9d9d9',
-                  }}
-                >
-                  {
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <img
-                        src={googleLogo}
-                        alt="Google Logo"
-                        style={{
-                          height: 16,
-                        }}
-                      />
-
-                      <a href={import.meta.env.VITE_OAUTH2_GOOGLE_URL}>Continue with Google</a>
-                    </div>
-                  }
-                </Button>
+                <ContinueWithGoogle isLoading={false} />
               </Form.Item>
 
               <div style={{ textAlign: 'center' }}>
