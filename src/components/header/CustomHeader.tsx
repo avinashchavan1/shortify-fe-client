@@ -1,5 +1,5 @@
 import { Layout, Menu, Button, Avatar, Drawer } from 'antd';
-import { UserOutlined, MenuOutlined } from '@ant-design/icons';
+import { MenuOutlined } from '@ant-design/icons';
 import './CustomHeader.css';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AppRouterConstants } from '../core/AppRouter.contants';
@@ -79,11 +79,51 @@ const CustomHeader = (props: CustomHeaderProps) => {
         ]
       : [];
 
+  const generateUserIcon = (isMobile: boolean, userLink: string) => {
+    if (isMobile) {
+      if (userLink?.length) {
+        return (
+          <img
+            src={userLink}
+            alt="profile"
+            style={{
+              borderRadius: '50%',
+              height: '36px',
+              width: '36px',
+              border: '1px solid #1677ff',
+            }}
+          />
+        );
+      }
+
+      return <Avatar>{userName}</Avatar>;
+    } else {
+      if (userLink?.length) {
+        return (
+          <img
+            src={userLink}
+            alt="profile"
+            style={{
+              borderRadius: '50%',
+              height: '48px',
+              width: '48px',
+              border: '2px solid #1677ff',
+            }}
+          />
+        );
+      }
+
+      return <Avatar>{userName}</Avatar>;
+    }
+  };
+
   const userData = (
     <>
       {isMobile ? (
         <>
-          {!!userName.length ? <Avatar>{userName}</Avatar> : <Avatar icon={<UserOutlined />} />}
+          {/* {!!userName.length ? <Avatar>{userName}</Avatar> : <Avatar icon={<UserOutlined />} />} */}
+          {generateUserIcon(isMobile, user.photo)}
+
           <Title
             level={5}
             style={{
@@ -105,7 +145,8 @@ const CustomHeader = (props: CustomHeaderProps) => {
           >
             {user.name}{' '}
           </Title>
-          {!!userName.length ? <Avatar>{userName}</Avatar> : <Avatar icon={<UserOutlined />} />}
+          {/* {!!userName.length ? <Avatar>{userName}</Avatar> : <Avatar icon={<UserOutlined />} />} */}
+          {generateUserIcon(isMobile, user.photo)}
         </>
       )}
     </>
@@ -136,9 +177,6 @@ const CustomHeader = (props: CustomHeaderProps) => {
           Avibit
         </Link>
       </div>
-      {/* <Menu mode="horizontal" activeKey={location.pathname} items={menuItems}></Menu> */}
-
-      {/* Show normal menu for desktop, hamburger for mobile */}
 
       {isMobile && isAuthenticated ? (
         <div className="menu-wrapper">
@@ -149,7 +187,7 @@ const CustomHeader = (props: CustomHeaderProps) => {
             className="desktop-menu"
           />
           <div className="header-actions">
-            {!!userName.length ? <Avatar>{userName}</Avatar> : <Avatar icon={<UserOutlined />} />}{' '}
+            {generateUserIcon(isMobile, user.photo)}
             <Title
               level={5}
               style={{

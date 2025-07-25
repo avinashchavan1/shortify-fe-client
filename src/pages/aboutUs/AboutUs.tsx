@@ -25,7 +25,10 @@ const AboutUs = () => {
           <Row gutter={[48, 48]} align="middle">
             <Col xs={24} md={12}>
               <div className="mission-image">
-                <img src="/about-us.JPG" alt="Our Mission" />
+                <img
+                  src="https://storage.googleapis.com/cultivated-cove-466001-b5.appspot.com/about-us.JPG"
+                  alt="Our Mission"
+                />
               </div>
             </Col>
             <Col xs={24} md={12}>

@@ -9,6 +9,7 @@ interface UserType {
   status: string;
   email: string;
   roles: string[];
+  photo: string;
 }
 
 interface UserState {
@@ -25,6 +26,7 @@ const userInitialState: UserType = {
   status: '',
   email: '',
   roles: [],
+  photo: '',
 };
 
 const initialState: UserState = {
