@@ -184,3 +184,5 @@ export const SignUp = () => {
     </PublicPageLayout>
   );
 };
+
+export default SignUp;

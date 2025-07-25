@@ -249,3 +249,5 @@ export const LinkManagement: React.FC = () => {
     </LayoutHoc>
   );
 };
+
+export default LinkManagement;

@@ -215,3 +215,5 @@ export const Home = () => {
     </LayoutHoc>
   );
 };
+
+export default Home;

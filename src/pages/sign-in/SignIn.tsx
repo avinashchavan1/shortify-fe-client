@@ -127,3 +127,5 @@ export const SignIn = () => {
     </PublicPageLayout>
   );
 };
+
+export default SignIn;
