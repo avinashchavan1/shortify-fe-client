@@ -1,4 +1,4 @@
-import { Typography, Input, Button, Row, Col, Checkbox, CheckboxChangeEvent } from 'antd';
+import { Typography, Input, Button, Row, Col, Checkbox, CheckboxChangeEvent, Spin } from 'antd';
 import {
   HomeOutlined,
   SafetyCertificateOutlined,
@@ -15,7 +15,7 @@ import { regexUrl } from './Home.helpers';
 import RecentLinks, { LinkItem } from '../last-few-generations/RecentLinks';
 import { TLinkResponse, TTableResponseData } from '../link-management/LinkManagement.types';
 import { isAuthenticatedUser } from '../../components/header/CustomHeader.helper';
-// import 'antd/dist/antd.css';
+import { ClipLoader, PropagateLoader } from 'react-spinners';
 
 export type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
@@ -47,23 +47,24 @@ export const Home = () => {
   const [customCode, setCustomCode] = useState('');
   const [shortLink, setShortLink] = useState('');
   const [loading, setLoading] = useState(false);
-  const onCheckboxChange = (_value: CheckboxChangeEvent) => {
-    setIsCustom(prevState => !prevState);
-  };
   const [recentLinks, setRecentLinks] = useState<LinkItem[]>([]);
   const [error, setError] = useState('');
+  const [isLoadingRecentLinks, setIsLoadingRecentLinks] = useState(false);
+
   const defaultUrl = HttpUrlLinks.getAllByPageAndFilter(1, 5, 'createdAt', 'desc');
   const { isAuthenticated } = isAuthenticatedUser();
+
   useEffect(() => {
     if (!isAuthenticated) {
       return;
     }
+
     const fetchRecentLinks = async () => {
+      setIsLoadingRecentLinks(true);
       try {
         const response = (await HttpClient.GET<TTableResponseData>(
           defaultUrl
         )) as unknown as TTableResponseData;
-        console.log('Recent links fetched:', response);
         const allUrls = response.content ?? [];
 
         const formattedData: LinkItem[] = allUrls.map((item: TLinkResponse) => ({
@@ -74,11 +75,13 @@ export const Home = () => {
         }));
 
         setRecentLinks(formattedData);
-        console.log('Formatted recent links:', formattedData);
+        setIsLoadingRecentLinks(false);
       } catch (error) {
+        setIsLoadingRecentLinks(false);
         console.error('Error fetching recent links:', error);
       }
     };
+
     fetchRecentLinks();
   }, [isAuthenticated, shortLink]);
 
@@ -95,6 +98,10 @@ export const Home = () => {
       setError('');
     }
     setShortLink('');
+  };
+
+  const onCheckboxChange = (_value: CheckboxChangeEvent) => {
+    setIsCustom(prevState => !prevState);
   };
 
   const handleSubmit = async () => {
@@ -131,75 +138,81 @@ export const Home = () => {
     setCustomCode(data.toLowerCase());
     setShortLink('');
   };
+
   return (
     <LayoutHoc>
       <div className="url-shortener-container">
-        <div className="shortener-section">
-          <Title level={2} className="section-title">
-            URL Shortener Service
-          </Title>
-          <Paragraph className="instruction-text">
-            Paste the long URL you want to shorten in the box below
-          </Paragraph>
+        <Spin spinning={loading} indicator={<ClipLoader color="#1677ff" />}>
+          <div className="shortener-section">
+            <Title level={2} className="section-title">
+              URL Shortener Service
+            </Title>
+            <Paragraph className="instruction-text">
+              Paste the long URL you want to shorten in the box below
+            </Paragraph>
 
-          <Input
-            id="url-input"
-            placeholder="https://www.example-long-url.com/..."
-            className="url-input"
-            onChange={e => handleOnChangeUrl(e.target.value)}
-          />
-
-          <Checkbox
-            onChange={onCheckboxChange}
-            className="custom-url-checkbox"
-            id="custom-url-checkbox"
-          >
-            Use custom short URL
-          </Checkbox>
-
-          {isCustom && (
             <Input
-              id="custom-url-input"
-              placeholder="Enter custom short URL"
-              className="code-input"
-              onChange={e => handleOnChangeCustomCode(e.target.value)}
-              max={6}
-              min={6}
+              id="url-input"
+              placeholder="https://www.example-long-url.com/..."
+              className="url-input"
+              onChange={e => handleOnChangeUrl(e.target.value)}
             />
-          )}
-          <Button
-            id="shorten-button"
-            type="primary"
-            className="shorten-button"
-            onClick={() => handleSubmit()}
-            disabled={
-              error.length > 0 ||
-              url.length === 0 ||
-              (isCustom && customCode.length !== 6) ||
-              shortLink.length > 0 ||
-              loading
-            }
-          >
-            Shorten URL
-          </Button>
-          {shortLink.length > 0 && (
-            <Typography.Text
-              type="secondary"
-              copyable={{
-                text: shortLink,
-                icon: <CopyOutlined className="copy-icon" />, // or a custom icon
-                tooltips: 'Click to copy',
-              }}
-              className="copyable-text"
+
+            <Checkbox
+              onChange={onCheckboxChange}
+              className="custom-url-checkbox"
+              id="custom-url-checkbox"
             >
-              {shortLink}
-            </Typography.Text>
-          )}
-          {error && <Typography.Text type="danger">{error}</Typography.Text>}
-        </div>
-        <div className="shortner-section">
-          <RecentLinks links={recentLinks} />
-        </div>
+              Use custom short URL
+            </Checkbox>
+
+            {isCustom && (
+              <Input
+                id="custom-url-input"
+                placeholder="Enter custom short URL"
+                className="code-input"
+                onChange={e => handleOnChangeCustomCode(e.target.value)}
+                max={6}
+                min={6}
+              />
+            )}
+            <Button
+              id="shorten-button"
+              type="primary"
+              className="shorten-button"
+              onClick={() => handleSubmit()}
+              disabled={
+                error.length > 0 ||
+                url.length === 0 ||
+                (isCustom && customCode.length !== 6) ||
+                shortLink.length > 0 ||
+                loading
+              }
+            >
+              Shorten URL
+            </Button>
+            {shortLink.length > 0 && (
+              <Typography.Text
+                type="secondary"
+                copyable={{
+                  text: shortLink,
+                  icon: <CopyOutlined className="copy-icon" />, // or a custom icon
+                  tooltips: 'Click to copy',
+                }}
+                className="copyable-text"
+              >
+                {shortLink}
+              </Typography.Text>
+            )}
+            {error && <Typography.Text type="danger">{error}</Typography.Text>}
+          </div>
+        </Spin>
+
+        <Spin spinning={isLoadingRecentLinks} indicator={<PropagateLoader color="#1677ff" />}>
+          <div className="shortner-section">
+            <RecentLinks links={recentLinks} />
+          </div>
+        </Spin>
         <div className="benefits-section">
           <Title level={2} className="section-title">
             Benefits of URL Shortening

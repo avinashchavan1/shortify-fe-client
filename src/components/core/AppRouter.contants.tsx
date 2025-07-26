@@ -11,4 +11,8 @@ export const AppRouterConstants = {
   LINK_MANAGEMENT: '/ui/link-management',
   QR_CODE_GENERATION: '/ui/qr-code-generation',
   INACTIVE_URL: '/ui/url-not-active',
+  PRIVACY: '/ui/privacy',
+  TERMS: '/ui/terms',
+  HELP: '/ui/help',
+  SITE_MAP: '/ui/sitemap',
 };

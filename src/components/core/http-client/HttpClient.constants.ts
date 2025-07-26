@@ -35,7 +35,7 @@ export const HttpUrlLinks = {
       params = true;
     }
     if (!params) {
-      baseUrl = baseUrl.slice(0, -1); // Remove trailing '?'
+      baseUrl = baseUrl.slice(0, -1);
     }
 
     return baseUrl;

@@ -159,8 +159,6 @@ export const LinkManagement: React.FC = () => {
             size="small"
             onClick={() => {
               confirm({ closeDropdown: false });
-              // setSearchText((selectedKeys as string[])[0]);
-              // setSearchedColumn(dataIndex);
             }}
           >
             Filter

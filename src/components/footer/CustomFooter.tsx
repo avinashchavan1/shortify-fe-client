@@ -1,11 +1,12 @@
-import { Layout, Row, Col, Input, Button, Dropdown, Space } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { Layout, Input, Button, Dropdown, Space } from 'antd';
 import {
-  TwitterOutlined,
-  FacebookOutlined,
-  LinkedinOutlined,
-  YoutubeOutlined,
+  CodeFilled,
+  DownOutlined,
+  GithubOutlined,
+  InstagramOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
+import { LinkedinOutlined } from '@ant-design/icons';
 import './CustomFooter.css';
 
 const { Footer } = Layout;
@@ -45,7 +46,7 @@ const CustomFooter = () => {
           </div>
         </div>
 
-        <Row className="footer-links" gutter={[24, 0]}>
+        {/* <Row className="footer-links" gutter={[24, 0]}>
           <Col xs={24} sm={12} md={6}>
             <h4>Product</h4>
             <ul>
@@ -96,7 +97,7 @@ const CustomFooter = () => {
               </li>
             </ul>
           </Col>
-        </Row>
+        </Row> */}
 
         <div className="footer-bottom">
           <div className="footer-left">
@@ -109,24 +110,40 @@ const CustomFooter = () => {
               </a>
             </Dropdown>
             <span className="copyright">© {year} Avibit, Inc. • </span>
-            <a href="#">Privacy</a>
+            <a href="/ui/privacy">Privacy</a>
             <span> • </span>
-            <a href="#">Terms</a>
+            <a href="/ui/terms">Terms</a>
             <span> • </span>
-            <a href="#">Sitemap</a>
+            <a href="/ui/sitemap">Sitemap</a>
           </div>
           <div className="social-icons">
-            <a href="#">
-              <TwitterOutlined />
+            <a href="https://avinashchavan.com" target="_blank" rel="noopener noreferrer">
+              <UserOutlined />
             </a>
-            <a href="#">
-              <FacebookOutlined />
+            <a
+              href="https://www.instagram.com/avinashchavan_/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <InstagramOutlined />
             </a>
-            <a href="#">
+            <a
+              href="https://www.linkedin.com/in/avinash-chavan-1a924b142/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <LinkedinOutlined />
             </a>
-            <a href="#">
-              <YoutubeOutlined />
+            <a href="https://github.com/avinashchavan1" target="_blank" rel="noopener noreferrer">
+              <GithubOutlined />
+            </a>
+
+            <a
+              href="https://leetcode.com/u/chavanavinash/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <CodeFilled />
             </a>
           </div>
         </div>

@@ -2,17 +2,6 @@ import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import axiosClient from './AxiosClient';
 import toast from 'react-hot-toast';
 
-// const HttpClient = {
-//   GET: (url: string, params?: Record<string, any>) => axiosClient.get(url, { params }),
-//   POST: (url: string, data?: Record<string, any>, config?: Record<string, any>): Promise<any> =>
-//     axiosClient.post(url, data, config),
-//   PUT: (url: string, data?: Record<string, any>, config?: Record<string, any>) =>
-//     axiosClient.put(url, data, config),
-//   DELETE: (url: string, config?: Record<string, any>) => axiosClient.delete(url, config),
-//   PATCH: (url: string, data?: Record<string, any>, config?: Record<string, any>) =>
-//     axiosClient.patch(url, data, config),
-// };
-
 export type ApiResponse<T> = {
   success: boolean;
   message?: string;

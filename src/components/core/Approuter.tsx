@@ -18,10 +18,10 @@ const InactiveUrlWarningComponent = lazy(() => import('./inactive-page/InactiveU
 const PageNotFoundWithIconsComponent = lazy(
   () => import('../page-not-found/PageNotFoundWithIcons')
 );
+const PrivacyComponent = lazy(() => import('../../pages/privacy/Privacy'));
+const SiteMapComponent = lazy(() => import('../../pages/site-map/SiteMap'));
 
 const AppRouter: React.FC<AppRouterProps> = () => {
-  console.log('AppRouter initialized');
-
   return (
     <BrowserRouter>
       <Routes>
@@ -39,7 +39,12 @@ const AppRouter: React.FC<AppRouterProps> = () => {
         <Route path={AppRouterConstants.LOGIN} element={<SignInComponent />} />
 
         <Route path={AppRouterConstants.INACTIVE_URL} element={<InactiveUrlWarningComponent />} />
+        <Route path={AppRouterConstants.PRIVACY} element={<PrivacyComponent />} />
+        <Route path={AppRouterConstants.SITE_MAP} element={<SiteMapComponent />} />
 
+        {/* Redirect to 404 for any unmatched routes */}
+
+        {/* Catch-all route for 404 Not Found */}
         <Route path="*" element={<PageNotFoundWithIconsComponent />} />
       </Routes>
     </BrowserRouter>

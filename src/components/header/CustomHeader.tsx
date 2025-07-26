@@ -19,7 +19,6 @@ import { useEffect, useState } from 'react';
 const { Header } = Layout;
 
 export interface CustomHeaderProps {
-  // isAuthenticated: boolean;
   isPublicPage: boolean;
 }
 
@@ -28,8 +27,7 @@ const CustomHeader = (props: CustomHeaderProps) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const { isPublicPage } = props;
-  const { isAuthenticated, user } = isAuthenticatedUser(); // Replace with your authentication logic
-  // const accessToken = localStorage.getItem(HTTP_ACCESS_TOKEN_COOKIE_NAME) || '';
+  const { isAuthenticated, user } = isAuthenticatedUser();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const pathName = window.location.pathname;
@@ -145,7 +143,6 @@ const CustomHeader = (props: CustomHeaderProps) => {
           >
             {user.name}{' '}
           </Title>
-          {/* {!!userName.length ? <Avatar>{userName}</Avatar> : <Avatar icon={<UserOutlined />} />} */}
           {generateUserIcon(isMobile, user.photo)}
         </>
       )}
@@ -154,7 +151,6 @@ const CustomHeader = (props: CustomHeaderProps) => {
 
   const userSection = isAuthenticated ? (
     <div className="header-actions">
-      {/* <Button icon={<BellOutlined />} /> */}
       {userData}
       <Button
         type="primary"
@@ -237,30 +233,7 @@ const CustomHeader = (props: CustomHeaderProps) => {
           {userSection}
         </>
       )}
-      {/* {isAuthenticated && (
-        <div className="header-actions">
-          <Button icon={<BellOutlined />} />
-          <Title
-            level={5}
-            style={{
-              height: '30px',
-              transform: 'translate(-3.26562px, -7.42969px)',
-            }}
-          >
-            {user.name}{' '}
-          </Title>
-          {!!userName.length ? <Avatar>{userName}</Avatar> : <Avatar icon={<UserOutlined />} />}
-          <Button
-            type="primary"
-            onClick={() => {
-              hanldeLogout();
-              dispatch(clearUser());
-            }}
-          >
-            Log out
-          </Button>
-        </div>
-      )} */}
+
       {isPublicPage && (
         <div className="auth-buttons">
           <Button type="text" onClick={() => navigate(AppRouterConstants.LOGIN)}>

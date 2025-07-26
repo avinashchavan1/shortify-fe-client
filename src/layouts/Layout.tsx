@@ -30,10 +30,7 @@ const LayoutHoc: React.FC<LayoutHocProps> = ({ children }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const isProtected = protectedRoutes.includes(pathName);
-  //   const accessToken = localStorage.getItem(HTTP_ACCESS_TOKEN_COOKIE_NAME) || '';
-  //   const isNotSignInOrSignUpPage =
-  //     pathName !== AppRouterConstants.LOGIN && pathName !== AppRouterConstants.REGISTER;
-  const { isAuthenticated } = isAuthenticatedUser(); // Replace with your authentication logic
+  const { isAuthenticated } = isAuthenticatedUser();
 
   useEffect(() => {
     const controller = new AbortController();

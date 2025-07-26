@@ -1,19 +1,8 @@
-import { Card, List, Tooltip, Button, Typography, Space, message } from 'antd';
+import { Card, List, Tooltip, Button, Typography, Space } from 'antd';
 import { CopyOutlined, LinkOutlined } from '@ant-design/icons';
+import { handleCopy, timeAgo, truncateUrl } from './RecentLinks.helpers';
 
 const { Text } = Typography;
-
-// Helper for truncating URLs
-const truncateUrl = (url: string, max = 40) => (url.length > max ? url.slice(0, max) + '...' : url);
-
-// Helper for relative time
-const timeAgo = (dateStr: string) => {
-  const diff = (Date.now() - new Date(dateStr).getTime()) / 1000;
-  if (diff < 60) return 'Just now';
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-  return `${Math.floor(diff / 86400)}d ago`;
-};
 
 export type LinkItem = {
   id: string;
@@ -28,10 +17,7 @@ export interface IRecentLink {
 
 const RecentLinks = ({ links }: IRecentLink) => {
   //   links = linksData || [];
-  const handleCopy = async (url: string) => {
-    await navigator.clipboard.writeText(url);
-    message.success('Short URL copied!');
-  };
+
   const currentProtocol = window.location.protocol;
   return (
     <Card
