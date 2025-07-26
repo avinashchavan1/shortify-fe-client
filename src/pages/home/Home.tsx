@@ -7,11 +7,14 @@ import {
 } from '@ant-design/icons';
 import './Home.css';
 import LayoutHoc from '../../layouts/Layout';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import HttpClient from '../../components/core/http-client/HttpClient';
 import { HttpUrlLinks } from '../../components/core/http-client/HttpClient.constants';
 import { getValue } from '../../utils/helpers';
 import { regexUrl } from './Home.helpers';
+import RecentLinks, { LinkItem } from '../last-few-generations/RecentLinks';
+import { TLinkResponse, TTableResponseData } from '../link-management/LinkManagement.types';
+import { isAuthenticatedUser } from '../../components/header/CustomHeader.helper';
 // import 'antd/dist/antd.css';
 
 export type NotificationType = 'success' | 'info' | 'warning' | 'error';
@@ -47,16 +50,40 @@ export const Home = () => {
   const onCheckboxChange = (_value: CheckboxChangeEvent) => {
     setIsCustom(prevState => !prevState);
   };
-
+  const [recentLinks, setRecentLinks] = useState<LinkItem[]>([]);
   const [error, setError] = useState('');
+  const defaultUrl = HttpUrlLinks.getAllByPageAndFilter(1, 5, 'createdAt', 'desc');
+  const { isAuthenticated } = isAuthenticatedUser();
+  useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
+    const fetchRecentLinks = async () => {
+      try {
+        const response = (await HttpClient.GET<TTableResponseData>(
+          defaultUrl
+        )) as unknown as TTableResponseData;
+        console.log('Recent links fetched:', response);
+        const allUrls = response.content ?? [];
+
+        const formattedData: LinkItem[] = allUrls.map((item: TLinkResponse) => ({
+          id: item.id,
+          shortUrl: item.shortUrl,
+          originalUrl: item.originalUrl,
+          timestamp: item.createdAt,
+        }));
+
+        setRecentLinks(formattedData);
+        console.log('Formatted recent links:', formattedData);
+      } catch (error) {
+        console.error('Error fetching recent links:', error);
+      }
+    };
+    fetchRecentLinks();
+  }, [isAuthenticated, shortLink]);
 
   const handleOnChangeUrl = (data: string) => {
     setUrl(data);
-    // const regex =
-    //   /^(?:(https?|ftp):\/\/)?(([a-z\d]([a-z\d-]*[a-z\d])?\.)+[a-z]{2,}|localhost)(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i;
-
-    // const regex =
-    //   /^(?:(https?|ftp):\/\/)?(([a-z\d]([a-z\d-]*[a-z\d])?\.)+[a-z]{2,}|localhost)(:\d{1,5})?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i;
 
     if (data.length === 0) {
       setError(HomeMessages.Empty);
@@ -170,7 +197,9 @@ export const Home = () => {
           )}
           {error && <Typography.Text type="danger">{error}</Typography.Text>}
         </div>
-
+        <div className="shortner-section">
+          <RecentLinks links={recentLinks} />
+        </div>
         <div className="benefits-section">
           <Title level={2} className="section-title">
             Benefits of URL Shortening
